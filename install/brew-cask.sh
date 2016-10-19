@@ -18,6 +18,7 @@ apps=(
   macdown
   opera
   slack
+  spectacle
   spotify
   sublime-text3
   cyberduck
