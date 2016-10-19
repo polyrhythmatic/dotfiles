@@ -8,6 +8,8 @@ https://dotfiles.github.io
 run:
 
 sudo softwareupdate -i -a #update
+
 sudo shutdown -r now #reboot
+
 xcode-select --install
 
