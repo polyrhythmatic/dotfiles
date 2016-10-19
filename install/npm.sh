@@ -1,4 +1,5 @@
 brew install nvm
+source $(brew --prefix nvm)/nvm.sh
 
 nvm install 6
 nvm use 6
