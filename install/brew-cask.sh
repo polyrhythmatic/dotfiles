@@ -10,17 +10,18 @@ apps=(
   dash
   dropbox
   firefox
-  firefox-nightly
+  firefoxnightly
   glimmerblocker
   google-chrome
   google-chrome-canary
   google-drive
+  iterm2
   macdown
   opera
   slack
   spectacle
   spotify
-  sublime-text3
+  sublime-text
   cyberduck
   virtualbox
   vlc
