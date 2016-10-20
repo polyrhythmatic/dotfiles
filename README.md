@@ -41,4 +41,27 @@ https://www.topbug.net/blog/2013/04/14/install-and-use-gnu-command-line-tools-in
 # brew doctor
 
 # os settings (auto hide dock, what lives in dock etc)
+turn off autocorrect in safari, messages etc
+
+
+# sublime
+https://github.com/mrmartineau/SublimeTextSetupWiki/issues/3
+copy sublime-linter user file 
+install sublime-linter
+install sublimelinter-json
+install sublimelinter-csslint (npm install -g csslint)
+install sublimelinter-contrib-sass-lint (npm install -g sass-lint)
+install sublimelinter-jshint (npm install -g jshint)
+SublimeLinter-eslint (npm install -g eslint
+)
+install sublimelinter-pylint (pip install pylint)
+install sublimelinter-contrib-glsl (needs special install https://github.com/numb3r23/SublimeLinter-contrib-glsl)
+install sublimelinter-contrib-htmllint (npm install -g htmllint-cli)
+
+## important - have to fix  PATH linking 
+in .profile .mkshrc .bashrc  and.zshrc."
+this is for RVM and NVM linking
+
+# python
+virtualenv
 
