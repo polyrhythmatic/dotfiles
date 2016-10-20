@@ -14,7 +14,6 @@ apps=(
   ffmpeg
   git
   imagemagick
-  nvm
   python
   shellcheck
   wget
