@@ -9,6 +9,7 @@ brew upgrade
 # Install packages
 
 apps=(
+  bash-completion
   coreutils
   cmake
   ffmpeg
