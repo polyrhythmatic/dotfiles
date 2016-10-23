@@ -1,12 +1,7 @@
-# Install Caskroom
-
-brew tap caskroom/cask
-brew install brew-cask
-brew tap caskroom/versions
-
 # Install packages
 
 apps=(
+  appcleaner
   dash
   dropbox
   firefox
@@ -16,7 +11,9 @@ apps=(
   google-chrome-canary
   google-drive
   iterm2
+  lastpass
   macdown
+  macs-fan-control
   opera
   slack
   spectacle

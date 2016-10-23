@@ -16,22 +16,17 @@ xcode-select --install
 TODO:
 
 # add to brew cask file:
-lastpass (needs to run /usr/local/Caskroom/lastpass/latest/LastPass Installer.app)
-add android-file-transfer
-add appcleaner
-brew cask install macs-fan-control (try to copy settings as well)
-evernote
-cyberduck
-skype
-Tunnelblick
-arduino
-seil? (keymapping)
-robomongo?
-syphon utils (simple client, simple server)?
+lastpass (works but needs to run /usr/local/Caskroom/lastpass/latest/LastPass Installer.app)
+
 unity?
 more here https://gist.github.com/jitendravyas/8d35b092dd9102a05ea3
 
-use brew to replace existing apps https://github.com/exherb/homebrew-cask-replace
+brew cask install unity
+brew cask install cycling74-max
+brew cask install ableton-live < test these out
+synology stuff
+GPG?
+
 
 
 
@@ -42,6 +37,7 @@ https://www.topbug.net/blog/2013/04/14/install-and-use-gnu-command-line-tools-in
 
 # os settings (auto hide dock, what lives in dock etc)
 turn off autocorrect in safari, messages etc
+https://github.com/herrbischoff/awesome-osx-command-line
 
 
 # sublime
@@ -64,4 +60,12 @@ this is for RVM and NVM linking
 
 # python
 virtualenv
+
+# mackup
+set up mackup to backup everything else that is not already in the dot files
+set up and test macs fan control (plist in /Library/Preferences/com.crystalidea.macsfancontrol.plist )
+sublime text
+istat
+dash
+seil (look into other keymapper)
 

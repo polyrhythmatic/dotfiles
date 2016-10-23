@@ -25,3 +25,5 @@ ln -sfv "$DOTFILES_DIR/git/.gitconfig" ~
 if [ "$(uname)" == "Darwin" ]; then
   . "$DOTFILES_DIR/install/brew-cask.sh"
 fi
+
+/usr/local/Caskroom/lastpass/latest/LastPass Installer.app
