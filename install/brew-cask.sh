@@ -18,6 +18,7 @@ apps=(
   iterm2
   macdown
   opera
+  silverlight
   slack
   spectacle
   spotify
