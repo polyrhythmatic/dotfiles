@@ -15,6 +15,7 @@ apps=(
   ffmpeg
   git
   imagemagick
+  mongodb --with-openssl
   python
   shellcheck
   wget
