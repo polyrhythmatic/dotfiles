@@ -14,6 +14,7 @@ packages=(
   localtunnel
   nodemon
   webpack
+  webpack-dev-server
 )
 
 npm install -g "${packages[@]}"

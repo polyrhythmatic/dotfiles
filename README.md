@@ -54,6 +54,9 @@ install sublimelinter-pylint (pip install pylint)
 install sublimelinter-contrib-glsl (needs special install https://github.com/numb3r23/SublimeLinter-contrib-glsl)
 install sublimelinter-contrib-htmllint (npm install -g htmllint-cli)
 
+babel for syntax highlighting https://packagecontrol.io/packages/Babel
+and oceanic theme https://packagecontrol.io/packages/Oceanic%20Next%20Color%20Scheme
+
 ## important - have to fix  PATH linking 
 in .profile .mkshrc .bashrc  and.zshrc."
 this is for RVM and NVM linking
