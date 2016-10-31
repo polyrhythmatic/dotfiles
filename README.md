@@ -69,3 +69,6 @@ istat
 dash
 seil (look into other keymapper)
 
+# go through this
+https://github.com/jaywcjlove/awesome-mac/blob/master/README-en.md
+
