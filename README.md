@@ -47,7 +47,7 @@ install sublime-linter
 install sublimelinter-json
 install sublimelinter-csslint (npm install -g csslint)
 install sublimelinter-contrib-sass-lint (npm install -g sass-lint)
-install sublimelinter-jshint (npm install -g jshint)
+~~install sublimelinter-jshint (npm install -g jshint)~~ use eslint now 
 SublimeLinter-eslint (npm install -g eslint
 )
 install sublimelinter-pylint (pip install pylint)
