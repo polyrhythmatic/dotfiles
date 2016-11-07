@@ -17,6 +17,7 @@ apps=(
   imagemagick
   mongodb --with-openssl
   python
+  python3
   shellcheck
   wget
 )
