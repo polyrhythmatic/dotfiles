@@ -45,12 +45,15 @@ install sublime-linter
 install sublimelinter-json
 install sublimelinter-csslint (npm install -g csslint)
 install sublimelinter-contrib-sass-lint (npm install -g sass-lint)
-install sublimelinter-jshint (npm install -g jshint)
+~~install sublimelinter-jshint (npm install -g jshint)~~ use eslint now 
 SublimeLinter-eslint (npm install -g eslint
 )
 install sublimelinter-pylint (pip install pylint)
 install sublimelinter-contrib-glsl (needs special install https://github.com/numb3r23/SublimeLinter-contrib-glsl)
 install sublimelinter-contrib-htmllint (npm install -g htmllint-cli)
+
+babel for syntax highlighting https://packagecontrol.io/packages/Babel
+and oceanic theme https://packagecontrol.io/packages/Oceanic%20Next%20Color%20Scheme
 
 ## important - have to fix  PATH linking 
 in .profile .mkshrc .bashrc  and.zshrc."
@@ -71,3 +74,7 @@ seil (look into other keymapper)
 https://github.com/jaywcjlove/awesome-mac/blob/master/README-en.md
 
 #mongodb?
+
+# mas
+incorporate this to install apple store apps
+https://github.com/mas-cli/mas
