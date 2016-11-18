@@ -11,6 +11,7 @@ apps=(
   google-chrome-canary
   google-drive
   iterm2
+  java
   lastpass
   macdown
   macs-fan-control
