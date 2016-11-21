@@ -15,6 +15,7 @@ apps=(
   ffmpeg
   git
   imagemagick
+  mas
   mongodb --with-openssl
   python
   python3
