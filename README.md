@@ -22,13 +22,11 @@ unity?
 more here https://gist.github.com/jitendravyas/8d35b092dd9102a05ea3
 
 brew cask install unity
-brew cask install cycling74-max
+brew cask install cycling74-max < this works beautifully
 brew cask install ableton-live < test these out
 synology stuff
 GPG?
-
-
-
+https://github.com/caskroom/homebrew-cask/blob/master/Casks/prey.rb add prey and api key
 
 # maybe brew install coreutils
 https://www.topbug.net/blog/2013/04/14/install-and-use-gnu-command-line-tools-in-mac-os-x/
@@ -75,6 +73,8 @@ seil (look into other keymapper)
 # go through this
 https://github.com/jaywcjlove/awesome-mac/blob/master/README-en.md
 
+#mongodb?
+
 # mas
 incorporate this to install apple store apps
 https://github.com/mas-cli/mas
@@ -82,4 +82,3 @@ added sh file but need to make sure it runs
 
 #disable bonjour in cyberduck
 defaults write ch.sudo.cyberduck rendezvous.notification.limit 0
-
