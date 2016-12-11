@@ -10,6 +10,7 @@ apps=(
   google-chrome
   google-chrome-canary
   google-drive
+  gpgtools
   iterm2
   java
   lastpass
