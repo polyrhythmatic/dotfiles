@@ -78,3 +78,7 @@ https://github.com/jaywcjlove/awesome-mac/blob/master/README-en.md
 # mas
 incorporate this to install apple store apps
 https://github.com/mas-cli/mas
+added sh file but need to make sure it runs
+
+#disable bonjour in cyberduck
+defaults write ch.sudo.cyberduck rendezvous.notification.limit 0
