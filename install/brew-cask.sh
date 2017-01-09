@@ -2,6 +2,7 @@
 
 apps=(
   appcleaner
+  arduino
   dash
   dropbox
   firefox
