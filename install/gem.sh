@@ -11,3 +11,4 @@ rvm install 2.1.7
 rvm use 2.1.7 --default
 
 # install gems here
+rvm install jekyll

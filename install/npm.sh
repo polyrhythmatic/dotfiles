@@ -8,6 +8,7 @@ nvm alias default 6
 # Globally install with npm
 
 packages=(
+  gifify
   grunt
   gulp
   http-server

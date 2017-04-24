@@ -3,6 +3,7 @@
 ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 brew tap homebrew/versions
 brew tap homebrew/dupes
+brew tap buo/cask-upgrade
 brew update
 brew upgrade
 
@@ -12,9 +13,10 @@ apps=(
   bash-completion
   coreutils
   cmake
-  ffmpeg
+  ffmpeg --with-libass --with-fontconfig
+  giflossy
   git
-  imagemagick
+  imagemagick --with-fontconfig
   mas
   mongodb --with-openssl
   python

@@ -13,6 +13,13 @@ sudo shutdown -r now #reboot
 
 xcode-select --install
 
+# Updating brew
+uses [homebrew-cask-upgrade](https://github.com/buo/homebrew-cask-upgrade)
+run:
+brew update
+brew cu
+
+
 TODO:
 
 # add to brew cask file:

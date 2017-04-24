@@ -168,6 +168,9 @@ function extract () {
   alias gba="git branch -a"
   alias gcam="git commit -am"
   alias gbb="git branch -b"
+
+  # open files with "chrome ____"
+  alias chrome="open -a 'Google Chrome'"
   
 # Case-Insensitive Auto Completion
 bind "set completion-ignore-case on" 
