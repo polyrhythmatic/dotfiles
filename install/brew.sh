@@ -16,6 +16,7 @@ apps=(
   ffmpeg --with-libass --with-fontconfig
   giflossy
   git
+  highlight
   imagemagick --with-fontconfig
   mas
   mongodb --with-openssl
