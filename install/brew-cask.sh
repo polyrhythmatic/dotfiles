@@ -20,8 +20,7 @@ apps=(
   fritzing
   glimmerblocker
   google-chrome
-  google-drive
-  gpgtools
+  google-drive-file-stream
   inkscape
   istat-menus
   iterm2
