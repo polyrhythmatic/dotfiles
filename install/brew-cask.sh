@@ -38,7 +38,6 @@ apps=(
   quicklook-csv
   quicklook-json
   robo-3t
-  seil
   silverlight
   sketch
   skype

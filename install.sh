@@ -29,5 +29,5 @@ fi
 if [ "$(uname)" == "Darwin" ]; then
   . "$DOTFILES_DIR/install/brew-cask.sh"
   ln -sfv "$DOTFILES_DIR/etc/.mackup.cfg" ~
-  /usr/local/Caskroom/lastpass/latest/LastPass Installer.app
+  open /usr/local/Caskroom/lastpass/latest/
 fi
