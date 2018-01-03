@@ -37,7 +37,7 @@ apps=(
   qlstephen
   quicklook-csv
   quicklook-json
-  robomongo
+  robo-3t
   seil
   silverlight
   sketch
