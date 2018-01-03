@@ -1,4 +1,5 @@
 # Install packages
+brew cask install xquartz # has to be installed before fontforge
 
 apps=(
   android-file-transfer
@@ -6,9 +7,7 @@ apps=(
   appcleaner
   arduino
   appcleaner
-  audacity
-  audacity-lame-library
-  betterzipql
+  betterzip
   blender
   calibre
   cyberduck
@@ -17,12 +16,10 @@ apps=(
   dropbox
   evernote
   firefox
-  firefoxnightly
   fontforge
   fritzing
   glimmerblocker
   google-chrome
-  google-chrome-canary
   google-drive
   gpgtools
   inkscape
@@ -54,10 +51,6 @@ apps=(
   virtualbox
   vlc
   webpquicklook
-  xquartz
 )
 
 brew cask install "${apps[@]}"
-
-# Quick Look Plugins (https://github.com/sindresorhus/quick-look-plugins)
-brew cask install qlcolorcode qlstephen qlmarkdown quicklook-json qlprettypatch quicklook-csv betterzipql qlimagesize webpquicklook suspicious-package
