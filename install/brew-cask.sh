@@ -25,6 +25,7 @@ apps=(
   istat-menus
   iterm2
   java
+  jupyter-notebook-viewer
   lastpass
   macdown
   macs-fan-control
