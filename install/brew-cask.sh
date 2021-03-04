@@ -47,7 +47,7 @@ apps=(
   spotify
   sublime-text
   suspicious-package
-  virtualbox
+  visual-studio
   vlc
   webpquicklook
 )

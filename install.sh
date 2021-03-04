@@ -17,17 +17,13 @@ ln -sfv "$DOTFILES_DIR/git/.gitconfig" ~
 
 # Package managers & packages
 
-if [ "$(uname)" == "Darwin" ]; then
-  . "$DOTFILES_DIR/install/mas.sh"
-fi
-
 . "$DOTFILES_DIR/install/brew.sh"
 . "$DOTFILES_DIR/install/bash.sh"
 . "$DOTFILES_DIR/install/npm.sh"
 . "$DOTFILES_DIR/install/gem.sh"
 
 if [ "$(uname)" == "Darwin" ]; then
+  . "$DOTFILES_DIR/install/mas.sh"
   . "$DOTFILES_DIR/install/brew-cask.sh"
-  ln -sfv "$DOTFILES_DIR/etc/.mackup.cfg" ~
-  open /usr/local/Caskroom/lastpass/latest/
+  # ln -sfv "$DOTFILES_DIR/etc/.mackup.cfg" ~
 fi

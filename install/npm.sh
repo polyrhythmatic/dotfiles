@@ -1,21 +1,16 @@
 brew install nvm
 source $(brew --prefix nvm)/nvm.sh
 
-nvm install 6
-nvm use 6
-nvm alias default 6
+nvm install 12
+nvm use 12
+nvm alias default 12
 
 # Globally install with npm
 
 packages=(
-  gifify
-  grunt
-  gulp
   http-server
   localtunnel
-  nodemon
-  webpack
-  webpack-dev-server
+  yarn
 )
 
 npm install -g "${packages[@]}"

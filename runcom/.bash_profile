@@ -1,15 +1,6 @@
-
-# Setting PATH for Python 3.4
-PATH="/Library/Frameworks/Python.framework/Versions/3.4/bin:${PATH}"
-export PATH
-
 if [ -f ~/.git-completion.bash ]; then
   source ~/.git-completion.bash
 fi
-
-# Setting PATH for Python 2.7
-PATH="/Library/Frameworks/Python.framework/Versions/2.7/bin:${PATH}"
-export PATH
 
 # Configuring Our Prompt
 # ======================
@@ -28,7 +19,7 @@ export PATH
     # Define some local colors
     local         RED="\[\033[0;31m\]" # This syntax is some weird bash color thing I never
     local   LIGHT_RED="\[\033[1;31m\]" # really understood
-    local        CHAR="🤓 "
+    local        CHAR="🚀 "
     # ♥ ☆ - Keeping some cool ASCII Characters for reference
 
     # Here is where we actually export the PS1 Variable which stores the text for your prompt
@@ -107,7 +98,7 @@ export PATH
     # fixing gcc
     # export PATH=~/.bin:$PATH
 
-    source ~/.profile
+    # source ~/.profile
 # Helpful Functions
 # =====================
 
@@ -191,6 +182,7 @@ function lg {
   if [ -f `brew --prefix`/etc/bash_completion ]; then
     . `brew --prefix`/etc/bash_completion
   fi
+
 [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
 
 # loads NVM
@@ -203,3 +195,9 @@ export HISTSIZE=32768;
 export HISTFILESIZE="${HISTSIZE}";
 export SAVEHIST=4096
 export HISTCONTROL=ignoredups:erasedups
+
+# pyenv
+
+if  command -v pyenv 1>/dev/null 2>&1; then
+  eval "$(pyenv init -)"
+fi
