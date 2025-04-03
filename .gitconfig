@@ -10,6 +10,7 @@
 	smudge = git hawser smudge %f
 	required = true
 [core]
+	excludesfile = ~/.gitignore # Use ~/.gitignore as the global excludes file
 	quotepath = false
 	ignorecase = false
 [color]
@@ -19,4 +20,4 @@
 	smudge = git lfs smudge %f
 	required = true
 [credential]
-	helper = store
+	helper = osxkeychain

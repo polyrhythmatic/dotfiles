@@ -1,55 +1,56 @@
 # Install packages
-brew cask install xquartz # has to be installed before fontforge
+echo "Installing XQuartz (dependency for some apps)..."
+brew install --cask xquartz # has to be installed before fontforge
 
 apps=(
-  android-file-transfer
-  android-studio
-  appcleaner
-  arduino
-  appcleaner
-  betterzip
-  blender
-  calibre
-  cyberduck
-  cycling74-max
-  dash
-  dropbox
-  evernote
+  # android-file-transfer
+  # android-studio
+  appcleaner # Removed duplicate
+  # arduino
+  # betterzip
+  # blender
+  # calibre
+  # cyberduck
+  # cycling74-max
+  # dash
+  # dropbox
+  # evernote
   firefox
-  fontforge
-  fritzing
-  glimmerblocker
+  # fontforge
+  # fritzing
+  # glimmerblocker # Removed (outdated)
   google-chrome
-  google-drive-file-stream
-  inkscape
-  istat-menus
-  iterm2
-  java
-  jupyter-notebook-viewer
-  lastpass
-  macdown
-  macs-fan-control
-  opera
-  processing
-  qlcolorcode
-  qlimagesize
-  qlmarkdown
-  qlprettypatch
-  qlstephen
-  quicklook-csv
-  quicklook-json
-  robo-3t
-  silverlight
-  sketch
-  skype
+  google-drive # Updated name
+  # inkscape
+  # istat-menus
+  # iterm2
+  # java
+  # jupyter-notebook-viewer
+  # lastpass
+  # macdown
+  # macs-fan-control
+  # opera
+  # processing
+  # qlcolorcode
+  # qlimagesize
+  # qlmarkdown
+  # qlprettypatch
+  # qlstephen
+  # quicklook-csv
+  # quicklook-json
+  rectangle # Replaced spectacle
+  # robo-3t
+  # silverlight # Removed (outdated)
+  # sketch
+  # skype
   slack
-  spectacle
-  spotify
-  sublime-text
+  # spotify
+  # sublime-text # Removed
   suspicious-package
-  visual-studio
+  visual-studio-code # Added/Replaced visual-studio
   vlc
-  webpquicklook
+  # webpquicklook
 )
 
-brew cask install "${apps[@]}"
+echo "Installing other cask applications..."
+brew install --cask "${apps[@]}"

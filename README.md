@@ -1,91 +1,65 @@
-copied from:
+# Seth Kranzler's Dotfiles
 
-https://github.com/webpro/dotfiles
-https://medium.com/@webprolific/getting-started-with-dotfiles-43c3602fd789#.bzni3bwbe
+These are my personal configuration files and setup scripts for macOS, optimized for Apple Silicon (M1/M2/M3) and Zsh. The goal is to automate the setup of a new development machine as much as possible.
 
-https://dotfiles.github.io
+## Prerequisites
 
-# run:
+1.  **Command Line Tools:** Before cloning, ensure the Command Line Tools are installed. If you run `git` on a fresh macOS install, it should prompt you to install them. Alternatively, run `xcode-select --install`.
+2.  **Mac App Store:** Log in to the Mac App Store *before* running the installation script. This is required for `mas` to install Xcode.
+3.  **iCloud Drive:** Ensure iCloud Drive is enabled and running if you want Mackup to sync application settings correctly.
 
-sudo softwareupdate -i -a #update
+## Installation
 
-sudo shutdown -r now #reboot
+1.  **Clone the repository:**
+    ```bash
+    git clone <your-repository-url> ~/dotfiles
+    ```
+    *(Replace `<your-repository-url>` with the actual URL of your dotfiles repository)*
 
-xcode-select --install
+2.  **Run the installation script:**
+    ```bash
+    cd ~/dotfiles
+    ./install.sh
+    ```
 
-# Updating brew
-uses [homebrew-cask-upgrade](https://github.com/buo/homebrew-cask-upgrade)
-run:
-brew update
-brew cu
+## What it Does
 
+The `install.sh` script performs the following actions:
 
-TODO:
+*   Updates the dotfiles repository itself (if it's a git repo).
+*   Creates symbolic links in your home directory (`~`) for key configuration files:
+    *   `.zshrc` (Zsh interactive config)
+    *   `.zprofile` (Zsh login config)
+    *   `.gitconfig` (Git configuration)
+    *   `.gitignore` (Global Git ignore rules)
+*   Installs [Homebrew](https://brew.sh/) (if not already installed) and essential command-line tools listed in `install/brew.sh`.
+*   Installs [NVM](https://github.com/nvm-sh/nvm), Node.js v22 (LTS), and global npm packages listed in `install/npm.sh`.
+*   Installs [RVM](https://rvm.io/), Ruby v3.3, and gems (like Jekyll) listed in `install/gem.sh`. - disabled for now
+*   Installs Xcode via the Mac App Store using `mas` (`install/mas.sh`).
+*   Installs GUI applications via Homebrew Cask listed in `install/brew-cask.sh`.
+*   Generates an SSH key (Ed25519) if one doesn't exist, configures `~/.ssh/config` for GitHub, adds the key to the agent/keychain, and copies the public key to the clipboard (`install/ssh-setup.sh`).
+*   Applies various macOS system preferences using `defaults write` commands (`install/macos.sh`).
+*   Backs up and restores application settings using [Mackup](https://github.com/lra/mackup) configured for iCloud Drive (`etc/.mackup.cfg`).
 
-# add to brew cask file:
-lastpass (works but needs to run /usr/local/Caskroom/lastpass/latest/LastPass Installer.app)
+## Post-Installation Steps
 
-unity?
-more here https://gist.github.com/jitendravyas/8d35b092dd9102a05ea3
+1.  **Add SSH Key to GitHub:** The script copies your public SSH key to the clipboard. You **must** manually add this key to your GitHub account settings: [https://github.com/settings/keys](https://github.com/settings/keys)
+2.  **Restart:** Some macOS preference changes and application installations may require a restart or logout/login to take full effect.
+3.  **SSH Key Passphrase (Optional but Recommended):** The generated SSH key does not have a passphrase for automation purposes. You can add one for better security by running:
+    ```bash
+    ssh-keygen -p -f ~/.ssh/id_ed25519
+    ```
+4.  **Review Mackup:** Check if Mackup successfully restored your application settings. You might need to run `mackup restore` again or adjust the application list in `etc/.mackup.cfg`. Run `mackup list` to see supported applications.
 
-brew cask install unity
-brew cask install cycling74-max < this works beautifully
-brew cask install ableton-live < test these out
-synology stuff
-GPG?
-https://github.com/caskroom/homebrew-cask/blob/master/Casks/prey.rb add prey and api key
+## Customization
 
-# maybe brew install coreutils
-https://www.topbug.net/blog/2013/04/14/install-and-use-gnu-command-line-tools-in-mac-os-x/
-
-# brew doctor
-
-# os settings (auto hide dock, what lives in dock etc)
-turn off autocorrect in safari, messages etc
-https://github.com/herrbischoff/awesome-osx-command-line
-
-
-# sublime
-https://github.com/mrmartineau/SublimeTextSetupWiki/issues/3
-copy sublime-linter user file 
-install sublime-linter
-install sublimelinter-json
-install sublimelinter-csslint (npm install -g csslint)
-install sublimelinter-contrib-sass-lint (npm install -g sass-lint)
-~~install sublimelinter-jshint (npm install -g jshint)~~ use eslint now 
-SublimeLinter-eslint (npm install -g eslint
-)
-install sublimelinter-pylint (pip install pylint)
-install sublimelinter-contrib-glsl (needs special install https://github.com/numb3r23/SublimeLinter-contrib-glsl)
-install sublimelinter-contrib-htmllint (npm install -g htmllint-cli)
-
-babel for syntax highlighting https://packagecontrol.io/packages/Babel
-and oceanic theme https://packagecontrol.io/packages/Oceanic%20Next%20Color%20Scheme
-
-## important - have to fix  PATH linking 
-in .profile .mkshrc .bashrc  and.zshrc."
-this is for RVM and NVM linking
-
-# python
-virtualenv
-
-# mackup
-set up mackup to backup everything else that is not already in the dot files
-set up and test macs fan control (plist in /Library/Preferences/com.crystalidea.macsfancontrol.plist )
-sublime text
-istat
-dash
-seil (look into other keymapper)
-
-# go through this
-https://github.com/jaywcjlove/awesome-mac/blob/master/README-en.md
-
-#mongodb?
-
-# mas
-incorporate this to install apple store apps
-https://github.com/mas-cli/mas
-added sh file but need to make sure it runs
-
-#disable bonjour in cyberduck
-defaults write ch.sudo.cyberduck rendezvous.notification.limit 0
+*   **Homebrew Packages:** Edit `install/brew.sh` to add or remove CLI tools.
+*   **Global npm Packages:** Edit `install/npm.sh`.
+*   **Ruby Gems:** Edit `install/gem.sh`.
+*   **Mac App Store Apps:** Edit `install/mas.sh` (use `mas search <app_name>` to find IDs).
+*   **Homebrew Casks (GUI Apps):** Edit `install/brew-cask.sh`.
+*   **macOS Preferences:** Edit `install/macos.sh`. Add or remove `defaults write` commands.
+*   **Zsh Configuration:** Edit `runcom/.zshrc` (for aliases, functions, interactive settings) and `runcom/.zprofile` (for PATH, environment variables). Consider adding a Zsh plugin manager like Oh My Zsh or Antigen.
+*   **Git Configuration:** Edit `.gitconfig`.
+*   **Global Gitignore:** Edit `.gitignore`.
+*   **Mackup Configuration:** Edit `etc/.mackup.cfg` to change storage or synced applications.
