@@ -16,6 +16,7 @@ apps=(
   # dropbox
   # evernote
   firefox
+  figma # Added Figma
   # fontforge
   # fritzing
   # glimmerblocker # Removed (outdated)

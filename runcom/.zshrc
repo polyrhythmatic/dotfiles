@@ -80,6 +80,9 @@ function lg {
   # open files with "chrome ____"
   alias chrome="open -a 'Google Chrome'"
 
+  # Cursor editor
+  alias code="/Applications/Cursor.app/Contents/Resources/app/bin/code"
+
 # Version Managers & Environment Setup
 # =====================
 
@@ -102,6 +105,55 @@ fi
 if command -v pyenv 1>/dev/null 2>&1; then
   eval "$(pyenv init -)"
 fi
+
+# Automatically use nvmrc if it exists in the current directory or parent directories
+auto_nvm_use() {
+  # Check if nvm command exists and is a function (sourced correctly)
+  if ! command -v nvm &> /dev/null || ! type nvm | grep -q 'shell function'; then
+    # Silently return if nvm isn't properly loaded
+    return 1
+  fi
+
+  local nvmrc_path
+  # Use nvm's built-in function to find the relevant .nvmrc file recursively upwards
+  # Suppress "No .nvmrc file found" message from nvm_find_nvmrc
+  nvmrc_path="$(nvm_find_nvmrc 2>/dev/null)"
+
+  if [[ -n "$nvmrc_path" ]]; then
+    # A .nvmrc file was found
+    local nvmrc_version_string
+    nvmrc_version_string=$(cat "${nvmrc_path}")
+
+    # Resolve the version string (e.g., "lts/iron", "20") to a specific version (e.g., "v20.11.1")
+    # Suppress "N/A" output from nvm version if the version isn't installed yet
+    local nvmrc_resolved_version
+    nvmrc_resolved_version=$(nvm version "${nvmrc_version_string}" 2>/dev/null)
+
+    # Get the currently active version
+    local current_version
+    current_version=$(nvm version current) # Use nvm version current for consistency
+
+    # Check if the resolved version is different from the current version
+    # This also handles the case where nvmrc_resolved_version is empty (target version not installed)
+    if [[ "$nvmrc_resolved_version" != "$current_version" ]]; then
+      # Use nvm install (no args) - it reads .nvmrc from nvmrc_path,
+      # installs if needed, and switches.
+      # Suppress stdout/stderr for cleaner cd experience.
+      nvm install > /dev/null 2>&1
+    fi
+    # If versions match, do nothing
+  fi
+  # If no .nvmrc is found, do nothing (keep current version)
+  return 0 # Indicate success or no action needed
+}
+
+# Add the function to the chpwd hook using Zsh's standard hook system
+# Ensure add-zsh-hook is available
+autoload -Uz add-zsh-hook
+add-zsh-hook chpwd auto_nvm_use
+
+# It's generally safe NOT to call auto_nvm_use explicitly on startup.
+# The hook will run when the first interactive shell starts in its initial directory.
 
 # History - Zsh specific settings
 # =====================
@@ -149,3 +201,26 @@ zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' # Case-insensitive mat
 if [ -f ~/.zshrc.local ]; then
   source ~/.zshrc.local
 fi
+export PYENV_ROOT="$HOME/.pyenv"
+[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
+eval "$(pyenv init - zsh)"
+
+# Axiom aliases (start) - managed by axi setup, do not edit manually
+export AXIOM_MAIN="/Users/sethkranzler/Development/axiom-2"
+# WORKTREES_DIR defaults to: /Users/sethkranzler/Development/worktrees
+axi() {
+    # Walk up to find axiom project, fall back to main repo
+    local dir="$PWD"
+    while [[ "$dir" != "/" && "$dir" != "$HOME" ]]; do
+        if [[ -f "$dir/pyproject.toml" ]] && grep -q 'name = "axiom"' "$dir/pyproject.toml" 2>/dev/null; then
+            (cd "$dir" && uv run axi "$@")
+            return
+        fi
+        dir="$(dirname "$dir")"
+    done
+    (cd "$AXIOM_MAIN" && uv run axi "$@")
+}
+# Axiom aliases (end)
+
+# Added by Antigravity
+export PATH="/Users/sethkranzler/.antigravity/antigravity/bin:$PATH"
