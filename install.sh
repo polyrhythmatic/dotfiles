@@ -21,6 +21,21 @@ ln -sfv "$DOTFILES_DIR/.gitconfig" ~ # Updated path for .gitconfig
 ln -sfv "$DOTFILES_DIR/.gitignore" ~ # Added symlink for global .gitignore
 ln -sfv "$DOTFILES_DIR/etc/.mackup.cfg" ~/.mackup.cfg # Added symlink for Mackup config
 
+# Claude Code configuration
+echo "Setting up Claude Code configuration..."
+mkdir -p ~/.claude/agents ~/.claude/skills
+# Symlink portable standards into ~/.claude so skills can reference them
+ln -sfv "$DOTFILES_DIR/claude/standards" ~/.claude/standards
+# Symlink skill directories individually (preserves any non-dotfiles skills)
+for skill_dir in "$DOTFILES_DIR/claude/skills"/*/; do
+  skill_name=$(basename "$skill_dir")
+  ln -sfv "$skill_dir" ~/.claude/skills/"$skill_name"
+done
+# Symlink agent files individually (preserves any non-dotfiles agents)
+for agent_file in "$DOTFILES_DIR/claude/agents"/*.md; do
+  ln -sfv "$agent_file" ~/.claude/agents/
+done
+
 # Package managers & packages
 echo "Installing packages and tools..."
 . "$DOTFILES_DIR/install/brew.sh"
