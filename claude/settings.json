@@ -5,5 +5,9 @@
   },
   "env": {},
   "model": "opus",
-  "alwaysThinkingEnabled": true
+  "alwaysThinkingEnabled": true,
+  "attribution": {
+    "commit": "",
+    "pr": ""
+  }
 }
