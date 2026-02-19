@@ -1,0 +1,45 @@
+#!/bin/bash
+# chezmoi:modify-manager
+# Regenerates the managed section above --- LOCAL ---
+# while preserving anything external tools appended below it.
+
+set -euo pipefail
+
+DOTFILES_RC="{{ .chezmoi.sourceDir }}/runcom/.zshrc"
+
+MANAGED=$(cat <<'MANAGED_EOF'
+# Managed by dotfiles — do not edit above the marker line
+source "$DOTFILES_RC"
+# --- LOCAL --- External tools may auto-append below this line ---
+MANAGED_EOF
+)
+
+# Replace $DOTFILES_RC with the actual path
+MANAGED="${MANAGED//\$DOTFILES_RC/$DOTFILES_RC}"
+
+# Read current file from stdin
+CURRENT="$(cat)"
+
+if [ -z "$CURRENT" ]; then
+  # No existing file — write fresh
+  printf '%s\n' "$MANAGED"
+  exit 0
+fi
+
+# Find the LOCAL marker line
+MARKER="# --- LOCAL ---"
+
+if echo "$CURRENT" | grep -qF "$MARKER"; then
+  # Extract everything after the marker line (the local section)
+  LOCAL_SECTION="$(echo "$CURRENT" | sed -n "/${MARKER}/,\$p")"
+  # Rebuild: managed section (which includes the marker) + local content after marker
+  LOCAL_CONTENT="$(echo "$CURRENT" | sed -n "/${MARKER}/,\$p" | tail -n +2)"
+  printf '%s\n' "$MANAGED"
+  if [ -n "$LOCAL_CONTENT" ]; then
+    printf '%s\n' "$LOCAL_CONTENT"
+  fi
+else
+  # No marker found — prepend managed section, keep existing content
+  printf '%s\n' "$MANAGED"
+  printf '%s\n' "$CURRENT"
+fi

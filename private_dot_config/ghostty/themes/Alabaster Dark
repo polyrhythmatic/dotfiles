@@ -1,0 +1,28 @@
+# Alabaster Dark — based on tonsky's Alabaster color scheme
+# https://github.com/tonsky/vscode-theme-alabaster
+
+background = #0E1415
+foreground = #CECECE
+cursor-color = #CECECE
+selection-background = #293334
+selection-foreground = #CECECE
+
+# Normal colors
+palette = 0=#000000
+palette = 1=#e25d56
+palette = 2=#73ca50
+palette = 3=#e9bf57
+palette = 4=#4a88e4
+palette = 5=#915caf
+palette = 6=#23acdd
+palette = 7=#CECECE
+
+# Bright colors
+palette = 8=#777777
+palette = 9=#e25d56
+palette = 10=#73ca50
+palette = 11=#e9bf57
+palette = 12=#4a88e4
+palette = 13=#915caf
+palette = 14=#23acdd
+palette = 15=#FFFFFF

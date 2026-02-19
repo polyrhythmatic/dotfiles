@@ -1,12 +1,6 @@
-[filter "media"]
-	required = true
 [user]
-	name = Seth Kranzler
-	email = sethkranzler@gmail.com
-[filter "hawser"]
-	clean = git hawser clean %f
-	smudge = git hawser smudge %f
-	required = true
+	name = {{ .name }}
+	email = {{ .email }}
 [core]
 	excludesfile = ~/.gitignore # Use ~/.gitignore as the global excludes file
 	quotepath = false

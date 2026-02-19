@@ -43,17 +43,22 @@ brew upgrade
 # Install packages
 
 apps=(
+  bun
   coreutils
   cmake
   ffmpeg
-  # giflossy # gif optimizer
-  git # version control
-  # highlight # syntax highlighter
-  imagemagick # image manipulation
-  mas # mac app store cli
-  mackup # Added Mackup for settings sync
-  shellcheck # shell script linter
-  wget # file downloader
+  fnm
+  fzf
+  git
+  git-lfs
+  imagemagick
+  mas
+  shellcheck
+  starship
+  uv
+  wget
+  zsh-autosuggestions
+  zsh-syntax-highlighting
 )
 
 # Install the packages

@@ -1,0 +1,20 @@
+{{ "#!/bin/bash" }}
+# Install CLI tools via Brewfile.
+# Re-runs when Brewfile_cli content changes.
+# Brewfile_cli hash: {{ include "Brewfile_cli" | sha256sum }}
+
+set -euo pipefail
+
+{{ if eq .chezmoi.arch "arm64" -}}
+eval "$(/opt/homebrew/bin/brew shellenv)"
+{{ else -}}
+eval "$(/usr/local/bin/brew shellenv)"
+{{ end -}}
+
+echo "Updating Homebrew..."
+brew update
+
+echo "Installing CLI packages from Brewfile_cli..."
+brew bundle --no-lock --file="{{ .chezmoi.sourceDir }}/Brewfile_cli"
+
+echo "CLI packages installed."

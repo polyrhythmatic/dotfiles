@@ -1,0 +1,68 @@
+# Starship Prompt — Swiss-minimal
+# No emoji, no icons, just information
+
+format = """$directory$git_branch$git_status$cmd_duration$character"""
+
+right_format = """$nodejs$python$rust"""
+
+[character]
+success_symbol = "[>](bold green)"
+error_symbol = "[>](bold red)"
+
+[directory]
+truncation_length = 3
+truncate_to_repo = true
+style = "bold white"
+
+[git_branch]
+format = "[$branch]($style) "
+style = "bold cyan"
+
+[git_status]
+format = '([$all_status$ahead_behind]($style) )'
+style = "bold yellow"
+
+[cmd_duration]
+min_time = 2_000
+format = "[$duration]($style) "
+style = "bold dim white"
+
+# Right prompt — show versions only in relevant projects
+[nodejs]
+format = "[node $version]($style) "
+style = "dim green"
+detect_extensions = []
+
+[python]
+format = "[py $version]($style) "
+style = "dim yellow"
+detect_extensions = []
+
+[rust]
+format = "[rs $version]($style) "
+style = "dim red"
+
+# Disable noisy modules
+[aws]
+disabled = true
+
+[gcloud]
+disabled = true
+
+[docker_context]
+disabled = true
+
+[package]
+disabled = true
+
+[kubernetes]
+disabled = true
+
+[terraform]
+disabled = true
+
+[vagrant]
+disabled = true
+
+[helm]
+disabled = true

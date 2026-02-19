@@ -1,0 +1,24 @@
+{{ "#!/bin/bash" }}
+# Install Node.js via fnm.
+# Re-runs when this script changes.
+# npm hash: {{ include "run_onchange_before_04-install-npm.sh.tmpl" | sha256sum }}
+
+set -euo pipefail
+
+{{ if eq .chezmoi.arch "arm64" -}}
+eval "$(/opt/homebrew/bin/brew shellenv)"
+{{ else -}}
+eval "$(/usr/local/bin/brew shellenv)"
+{{ end -}}
+
+if ! command -v fnm &>/dev/null; then
+  echo "fnm not found — skipping Node.js install."
+  exit 0
+fi
+
+echo "Installing Node.js v22 (LTS) via fnm..."
+eval "$(fnm env)"
+fnm install 22
+fnm default 22
+
+echo "Node.js installed: $(node --version)"

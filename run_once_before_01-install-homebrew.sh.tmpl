@@ -1,0 +1,29 @@
+{{ "#!/bin/bash" }}
+# Install Homebrew if not already present.
+# Architecture-aware for Apple Silicon vs Intel.
+
+set -euo pipefail
+
+if command -v brew &>/dev/null; then
+  echo "Homebrew already installed."
+  exit 0
+fi
+
+echo "Installing Homebrew..."
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+{{ if eq .chezmoi.arch "arm64" -}}
+HOMEBREW_PATH="/opt/homebrew/bin"
+{{ else -}}
+HOMEBREW_PATH="/usr/local/bin"
+{{ end -}}
+
+# Add Homebrew to PATH for this session
+if ! echo "$PATH" | grep -q "$HOMEBREW_PATH"; then
+  export PATH="$HOMEBREW_PATH:$PATH"
+fi
+
+# Source brew shellenv
+eval "$($HOMEBREW_PATH/brew shellenv)"
+
+echo "Homebrew installed successfully."

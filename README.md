@@ -1,65 +1,101 @@
 # Seth Kranzler's Dotfiles
 
-These are my personal configuration files and setup scripts for macOS, optimized for Apple Silicon (M1/M2/M3) and Zsh. The goal is to automate the setup of a new development machine as much as possible.
+Personal configuration files for macOS, managed by [chezmoi](https://www.chezmoi.io/). Optimized for Apple Silicon and Zsh.
 
 ## Prerequisites
 
-1.  **Command Line Tools:** Before cloning, ensure the Command Line Tools are installed. If you run `git` on a fresh macOS install, it should prompt you to install them. Alternatively, run `xcode-select --install`.
-2.  **Mac App Store:** Log in to the Mac App Store *before* running the installation script. This is required for `mas` to install Xcode.
-3.  **iCloud Drive:** Ensure iCloud Drive is enabled and running if you want Mackup to sync application settings correctly.
+1. **Command Line Tools:** Run `xcode-select --install` or let `git clone` prompt you.
+2. **Mac App Store:** Log in before running install (required for `mas` to install Xcode).
 
 ## Installation
 
-1.  **Clone the repository:**
-    ```bash
-    git clone <your-repository-url> ~/dotfiles
-    ```
-    *(Replace `<your-repository-url>` with the actual URL of your dotfiles repository)*
+Fresh machine (one command):
 
-2.  **Run the installation script:**
-    ```bash
-    cd ~/dotfiles
-    ./install.sh
-    ```
+```bash
+sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply sethkranzler
+```
+
+Or if chezmoi is already installed:
+
+```bash
+chezmoi init --apply sethkranzler
+```
+
+First run will prompt for your name and email (used in `.gitconfig`).
 
 ## What it Does
 
-The `install.sh` script performs the following actions:
+`chezmoi apply` manages the following:
 
-*   Updates the dotfiles repository itself (if it's a git repo).
-*   Creates symbolic links in your home directory (`~`) for key configuration files:
-    *   `.zshrc` (Zsh interactive config)
-    *   `.zprofile` (Zsh login config)
-    *   `.gitconfig` (Git configuration)
-    *   `.gitignore` (Global Git ignore rules)
-*   Installs [Homebrew](https://brew.sh/) (if not already installed) and essential command-line tools listed in `install/brew.sh`.
-*   Installs [NVM](https://github.com/nvm-sh/nvm), Node.js v22 (LTS), and global npm packages listed in `install/npm.sh`.
-*   Installs [RVM](https://rvm.io/), Ruby v3.3, and gems (like Jekyll) listed in `install/gem.sh`. - disabled for now
-*   Installs Xcode via the Mac App Store using `mas` (`install/mas.sh`).
-*   Installs GUI applications via Homebrew Cask listed in `install/brew-cask.sh`.
-*   Generates an SSH key (Ed25519) if one doesn't exist, configures `~/.ssh/config` for GitHub, adds the key to the agent/keychain, and copies the public key to the clipboard (`install/ssh-setup.sh`).
-*   Applies various macOS system preferences using `defaults write` commands (`install/macos.sh`).
-*   Backs up and restores application settings using [Mackup](https://github.com/lra/mackup) configured for iCloud Drive (`etc/.mackup.cfg`).
+- **Shell config** (`.zshrc`, `.zprofile`) via modify scripts that preserve a managed section + `LOCAL` marker for external tool additions
+- **Git config** (`.gitconfig` templated with name/email, `.gitignore`)
+- **Homebrew** CLI tools and GUI apps (triggered on Brewfile changes)
+- **fnm** (Fast Node Manager) + Node.js v22 LTS + global npm packages
+- **Terminal configs** — Ghostty (Alabaster Dark theme, Berkeley Mono font) and iTerm2 Dynamic Profile
+- **Starship prompt** — minimal Swiss-inspired config
+- **Shell plugins** — fzf, zsh-autosuggestions, zsh-syntax-highlighting
+- **SSH key** generation and GitHub config
+- **macOS preferences** via `defaults write` (audited for modern macOS)
+- **Claude Code** — symlinks standards, skills, agents, settings, and MCP config into `~/.claude/`
 
-## Post-Installation Steps
+## Claude Code Multi-Agent Setup
 
-1.  **Add SSH Key to GitHub:** The script copies your public SSH key to the clipboard. You **must** manually add this key to your GitHub account settings: [https://github.com/settings/keys](https://github.com/settings/keys)
-2.  **Restart:** Some macOS preference changes and application installations may require a restart or logout/login to take full effect.
-3.  **SSH Key Passphrase (Optional but Recommended):** The generated SSH key does not have a passphrase for automation purposes. You can add one for better security by running:
-    ```bash
-    ssh-keygen -p -f ~/.ssh/id_ed25519
-    ```
-4.  **Review Mackup:** Check if Mackup successfully restored your application settings. You might need to run `mackup restore` again or adjust the application list in `etc/.mackup.cfg`. Run `mackup list` to see supported applications.
+The `claude/` directory contains a portable multi-agent configuration:
 
-## Customization
+```
+claude/
+  standards/       # Shared coding standards
+  skills/          # Skill definitions (design-reviewer, dev-reviewer, etc.)
+  agents/          # Agent definitions (design-system-component, figma-design-qa)
+  ARCHITECTURE.md  # Detailed architecture documentation
+```
 
-*   **Homebrew Packages:** Edit `install/brew.sh` to add or remove CLI tools.
-*   **Global npm Packages:** Edit `install/npm.sh`.
-*   **Ruby Gems:** Edit `install/gem.sh`.
-*   **Mac App Store Apps:** Edit `install/mas.sh` (use `mas search <app_name>` to find IDs).
-*   **Homebrew Casks (GUI Apps):** Edit `install/brew-cask.sh`.
-*   **macOS Preferences:** Edit `install/macos.sh`. Add or remove `defaults write` commands.
-*   **Zsh Configuration:** Edit `runcom/.zshrc` (for aliases, functions, interactive settings) and `runcom/.zprofile` (for PATH, environment variables). Consider adding a Zsh plugin manager like Oh My Zsh or Antigen.
-*   **Git Configuration:** Edit `.gitconfig`.
-*   **Global Gitignore:** Edit `.gitignore`.
-*   **Mackup Configuration:** Edit `etc/.mackup.cfg` to change storage or synced applications.
+Chezmoi symlinks these into `~/.claude/` so Claude Code picks them up automatically.
+
+## File Reference
+
+| Chezmoi source | Target | Purpose |
+|----------------|--------|---------|
+| `dot_gitconfig.tmpl` | `~/.gitconfig` | Git config (templated) |
+| `dot_gitignore_global` | `~/.gitignore` | Global gitignore |
+| `modify_dot_zshrc` | `~/.zshrc` | Shell interactive config |
+| `modify_dot_zprofile` | `~/.zprofile` | Shell login/env config |
+| `private_dot_config/starship.toml` | `~/.config/starship.toml` | Starship prompt |
+| `private_dot_config/ghostty/` | `~/.config/ghostty/` | Ghostty terminal |
+| `private_dot_claude/` | `~/.claude/` | Claude Code symlinks |
+| `Brewfile_cli` | (run script input) | CLI packages |
+| `Brewfile_cask` | (run script input) | GUI applications |
+| `runcom/.zshrc` | (sourced by modify script) | Zsh config source |
+| `runcom/.zprofile` | (sourced by modify script) | Zprofile config source |
+| `config/iterm2/Default.json` | (copied by run script) | iTerm2 Dynamic Profile |
+| `claude/` | (symlink targets) | Claude Code config |
+
+## Run Scripts
+
+| Script | Type | Purpose |
+|--------|------|---------|
+| `run_once_before_00-migrate-from-symlinks.sh` | once | Remove old symlinks from legacy install |
+| `run_once_before_01-install-homebrew.sh.tmpl` | once | Install Homebrew (arch-aware) |
+| `run_onchange_before_02-install-brew-packages.sh.tmpl` | onchange | CLI tools via Brewfile |
+| `run_onchange_before_03-install-brew-cask.sh.tmpl` | onchange | GUI apps via Brewfile |
+| `run_onchange_before_04-install-npm.sh.tmpl` | onchange | fnm + Node v22 |
+| `run_once_before_05-install-mas.sh` | once | Xcode via Mac App Store |
+| `run_once_before_06-setup-ssh.sh.tmpl` | once | SSH key generation |
+| `run_once_before_07-check-fonts.sh` | once | Berkeley Mono font check |
+| `run_after_10-iterm2-profile.sh.tmpl` | after | iTerm2 Dynamic Profile |
+| `run_onchange_after_20-macos-defaults.sh.tmpl` | onchange | macOS system preferences |
+
+## Testing
+
+See `testing/` directory:
+
+- `tart-test.sh` — Automated headless VM test (requires `tart`)
+- `tart-test-idempotent.sh` — Verify second apply produces no changes
+- `capture-defaults.sh` — Capture macOS defaults before/after for auditing
+- `UTM-TESTING.md` — Manual visual verification checklist
+
+## Post-Installation
+
+1. **Add SSH Key to GitHub:** The install script copies your public key to the clipboard. Add it at [github.com/settings/keys](https://github.com/settings/keys).
+2. **Restart:** Some macOS preferences require logout/restart to take effect.
+3. **Local shell additions:** External tools can safely append below the `LOCAL` marker in `~/.zshrc`.

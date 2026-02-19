@@ -1,0 +1,53 @@
+{{ "#!/bin/bash" }}
+# SSH key generation and GitHub config.
+
+set -euo pipefail
+
+SSH_DIR="$HOME/.ssh"
+KEY_PATH="$SSH_DIR/id_ed25519"
+CONFIG_PATH="$SSH_DIR/config"
+EMAIL="{{ .email }}"
+
+echo "Setting up SSH key for GitHub..."
+
+mkdir -p "$SSH_DIR"
+chmod 700 "$SSH_DIR"
+
+if [ -f "$KEY_PATH" ]; then
+  echo "SSH key already exists at $KEY_PATH. Skipping generation."
+else
+  echo "Generating new Ed25519 SSH key..."
+  ssh-keygen -t ed25519 -C "$EMAIL" -f "$KEY_PATH" -N ""
+  chmod 600 "$KEY_PATH"
+  chmod 644 "${KEY_PATH}.pub"
+  echo "New SSH key generated at $KEY_PATH"
+fi
+
+# Start ssh-agent and add key
+eval "$(ssh-agent -s)" >/dev/null
+ssh-add --apple-use-keychain "$KEY_PATH" 2>/dev/null || ssh-add "$KEY_PATH"
+
+# Configure SSH for GitHub
+touch "$CONFIG_PATH"
+chmod 600 "$CONFIG_PATH"
+
+if ! grep -q "Host github.com" "$CONFIG_PATH"; then
+  cat >> "$CONFIG_PATH" << EOF
+
+Host github.com
+  AddKeysToAgent yes
+  UseKeychain yes
+  IdentityFile $KEY_PATH
+EOF
+  echo "GitHub host entry added to SSH config."
+fi
+
+# Copy public key to clipboard
+if command -v pbcopy >/dev/null; then
+  cat "${KEY_PATH}.pub" | pbcopy
+  echo "Public SSH key copied to clipboard."
+fi
+
+echo "SSH setup complete."
+echo "Add your key at: https://github.com/settings/keys"
+cat "${KEY_PATH}.pub"

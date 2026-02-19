@@ -1,0 +1,17 @@
+{{ "#!/bin/bash" }}
+# Install GUI apps via Brewfile.
+# Re-runs when Brewfile_cask content changes.
+# Brewfile_cask hash: {{ include "Brewfile_cask" | sha256sum }}
+
+set -euo pipefail
+
+{{ if eq .chezmoi.arch "arm64" -}}
+eval "$(/opt/homebrew/bin/brew shellenv)"
+{{ else -}}
+eval "$(/usr/local/bin/brew shellenv)"
+{{ end -}}
+
+echo "Installing GUI applications from Brewfile_cask..."
+brew bundle --no-lock --file="{{ .chezmoi.sourceDir }}/Brewfile_cask"
+
+echo "GUI applications installed."

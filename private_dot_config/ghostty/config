@@ -1,0 +1,26 @@
+# Ghostty Configuration
+# Alabaster Dark + Berkeley Mono — Swiss-minimal terminal
+
+# Font
+font-family = Berkeley Mono
+font-size = 14
+
+# Theme (custom file in themes/)
+theme = Alabaster Dark
+
+# Cursor
+cursor-style = block
+cursor-style-blink = false
+
+# Window
+window-padding-x = 12
+window-padding-y = 8
+window-decoration = true
+
+# macOS
+macos-titlebar-style = tabs
+macos-option-as-alt = true
+
+# Misc
+copy-on-select = clipboard
+confirm-close-surface = false

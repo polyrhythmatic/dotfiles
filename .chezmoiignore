@@ -1,0 +1,21 @@
+README.md
+MIGRATION-PLAN.md
+LICENSE
+.claude/
+.gitignore
+
+# Source content directories (not applied directly)
+runcom/
+claude/
+config/iterm2/
+
+# Brewfiles (referenced by run scripts, not applied to ~)
+Brewfile_cli
+Brewfile_cask
+
+# Testing infrastructure
+testing/
+
+# Legacy install scripts
+install.sh.legacy
+install/
