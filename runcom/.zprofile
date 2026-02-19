@@ -15,11 +15,20 @@ if [ -x "$(command -v brew)" ]; then
   fi
 fi
 
-# Editors (Cursor)
-export VISUAL="/Applications/Cursor.app/Contents/Resources/app/bin/code -w"
-export SVN_EDITOR="/Applications/Cursor.app/Contents/Resources/app/bin/code -w"
-export GIT_EDITOR="/Applications/Cursor.app/Contents/Resources/app/bin/code -w"
+# XDG Base Directories
+export XDG_CONFIG_HOME="$HOME/.config"
+export XDG_DATA_HOME="$HOME/.local/share"
+export XDG_CACHE_HOME="$HOME/.cache"
+
+# Editors (Cursor with vim fallback)
+if [ -x "/Applications/Cursor.app/Contents/Resources/app/bin/code" ]; then
+  export VISUAL="/Applications/Cursor.app/Contents/Resources/app/bin/code -w"
+else
+  export VISUAL="vim"
+fi
 export EDITOR="$VISUAL"
+export SVN_EDITOR="$VISUAL"
+export GIT_EDITOR="$VISUAL"
 
 # Source local/private profile settings if they exist
 if [ -f ~/.zprofile.local ]; then

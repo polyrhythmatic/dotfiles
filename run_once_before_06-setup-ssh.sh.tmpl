@@ -5,7 +5,6 @@ set -euo pipefail
 
 SSH_DIR="$HOME/.ssh"
 KEY_PATH="$SSH_DIR/id_ed25519"
-CONFIG_PATH="$SSH_DIR/config"
 EMAIL="{{ .email }}"
 
 echo "Setting up SSH key for GitHub..."
@@ -27,20 +26,7 @@ fi
 eval "$(ssh-agent -s)" >/dev/null
 ssh-add --apple-use-keychain "$KEY_PATH" 2>/dev/null || ssh-add "$KEY_PATH"
 
-# Configure SSH for GitHub
-touch "$CONFIG_PATH"
-chmod 600 "$CONFIG_PATH"
-
-if ! grep -q "Host github.com" "$CONFIG_PATH"; then
-  cat >> "$CONFIG_PATH" << EOF
-
-Host github.com
-  AddKeysToAgent yes
-  UseKeychain yes
-  IdentityFile $KEY_PATH
-EOF
-  echo "GitHub host entry added to SSH config."
-fi
+# SSH config is managed by chezmoi (private_dot_ssh/private_config)
 
 # Copy public key to clipboard
 if command -v pbcopy >/dev/null; then

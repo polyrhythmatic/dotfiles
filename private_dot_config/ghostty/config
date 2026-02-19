@@ -1,7 +1,7 @@
 # Ghostty Configuration
 # Alabaster Dark + Berkeley Mono — Swiss-minimal terminal
 
-# Font
+# Font (Ghostty falls back to system monospace if Berkeley Mono is missing)
 font-family = Berkeley Mono
 font-size = 14
 

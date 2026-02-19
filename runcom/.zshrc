@@ -1,3 +1,9 @@
+# Startup Profiling (run: ZPROF=1 zsh -i -c exit)
+# =====================
+if [[ -n "$ZPROF" ]]; then
+  zmodload zsh/zprof
+fi
+
 # Configurations
 # =====================
 # GIT_MERGE_AUTO_EDIT
@@ -22,33 +28,15 @@ function psg {
   ps aux | grep "[$FIRST]$REST"
 }
 
-# A function to extract correctly any archive based on extension
-# USE: extract imazip.zip
-#      extract imatar.tar
-function extract () {
-    if [ -f $1 ] ; then
-        case $1 in
-            *.tar.bz2)  tar xjf $1      ;;
-            *.tar.gz)   tar xzf $1      ;;
-            *.bz2)      bunzip2 $1      ;;
-            *.rar)      unrar x $1      ;;
-            *.gz)       gunzip $1       ;;
-            *.tar)      tar xf $1       ;;
-            *.tbz2)     tar xjf $1      ;;
-            *.tgz)      tar xzf $1      ;;
-            *.zip)      unzip $1        ;;
-            *.Z)        uncompress $1   ;;
-            *)          echo "'$1' cannot be extracted via extract()" ;;
-        esac
-    else
-        echo "'$1' is not a valid file"
-    fi
-}
-
 # A function to easily grep for a matching file
 # USE: lg filename
 function lg {
   ls -la | grep "$@"
+}
+
+# Time zsh startup (runs 10 iterations)
+function timezsh {
+  for i in $(seq 1 10); do /usr/bin/time zsh -i -c exit; done
 }
 
 # Aliases
@@ -70,7 +58,9 @@ function lg {
   alias chrome="open -a 'Google Chrome'"
 
   # Cursor editor
-  alias code="/Applications/Cursor.app/Contents/Resources/app/bin/code"
+  if [ -x "/Applications/Cursor.app/Contents/Resources/app/bin/code" ]; then
+    alias code="/Applications/Cursor.app/Contents/Resources/app/bin/code"
+  fi
 
 # Version Managers & Environment Setup
 # =====================
@@ -126,6 +116,11 @@ fi
 
 # Starship prompt (must be last — wraps precmd)
 eval "$(starship init zsh)"
+
+# Profiling output (must be near end)
+if [[ -n "$ZPROF" ]]; then
+  zprof
+fi
 
 # Source local/private settings if they exist
 if [ -f ~/.zshrc.local ]; then

@@ -15,7 +15,3 @@ Brewfile_cask
 
 # Testing infrastructure
 testing/
-
-# Legacy install scripts
-install.sh.legacy
-install/
