@@ -60,6 +60,7 @@ function timezsh {
   # Cursor editor
   if [ -x "/Applications/Cursor.app/Contents/Resources/app/bin/code" ]; then
     alias code="/Applications/Cursor.app/Contents/Resources/app/bin/code"
+    export PATH="/Applications/Cursor.app/Contents/Resources/app/bin:$PATH"
   fi
 
 # Version Managers & Environment Setup
