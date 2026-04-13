@@ -1,7 +1,6 @@
 cask "xquartz"
 
 cask "appcleaner"
-cask "claude-code"
 cask "firefox"
 cask "figma"
 cask "ghostty"
