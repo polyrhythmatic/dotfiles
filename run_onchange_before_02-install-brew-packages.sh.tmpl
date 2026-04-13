@@ -15,7 +15,13 @@ echo "Updating Homebrew..."
 brew update
 
 echo "Installing CLI packages from Brewfile_cli..."
-brew bundle --no-lock --file="{{ .chezmoi.sourceDir }}/Brewfile_cli"
+brew bundle --file="{{ .chezmoi.sourceDir }}/Brewfile_cli"
+
+{{ if eq .chezmoi.arch "arm64" -}}
+# tart requires Apple Silicon (Virtualization.framework ARM)
+echo "Installing tart (Apple Silicon only)..."
+brew install tart
+{{ end -}}
 
 echo "Installing browsers for CLI tools..."
 command -v agent-browser &>/dev/null && agent-browser install

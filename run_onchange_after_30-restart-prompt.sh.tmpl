@@ -1,0 +1,39 @@
+{{ "#!/bin/bash" }}
+# Restart prompt + deferred app killall.
+# Re-runs whenever macos-defaults script changes, via the hash below.
+# macos-defaults hash: {{ include "run_onchange_after_20-macos-defaults.sh.tmpl" | sha256sum }}
+#
+# Why this exists: some defaults (login items, keyboard repeat, Gatekeeper,
+# FileVault, some network/audio settings) only take effect after a full
+# restart, not after killall. Prompt the user; if they pick "Later", still
+# bounce the system apps (Dock, Finder, cfprefsd, SystemUIServer) so they
+# pick up the new prefs without a reboot.
+
+set -euo pipefail
+
+CHOICE=$(osascript <<'APPLESCRIPT' 2>/dev/null || echo "Later"
+display dialog "Dotfiles macOS preferences updated.
+
+A restart is recommended to finalize changes — some settings (login items, keyboard, security) only take effect on restart." buttons {"Later", "Restart Now"} default button "Restart Now" with icon note with title "Dotfiles"
+button returned of result
+APPLESCRIPT
+)
+
+if [ "$CHOICE" = "Restart Now" ]; then
+	echo "User chose Restart Now. Triggering restart dialog..."
+	osascript -e 'tell application "loginwindow" to «event aevtrrst»' || true
+	exit 0
+fi
+
+echo "User chose Later. Scheduling detached killall so system apps pick up prefs..."
+
+# Detached subshell survives chezmoi + terminal exit.
+# Terminal emulators (Terminal/iTerm2/ghostty) are intentionally NOT killed
+# here — the user is actively using one, and killing it would disrupt their
+# session. They can restart it manually if they changed terminal-specific
+# prefs.
+nohup sh -c 'sleep 3; killall cfprefsd Dock Finder SystemUIServer 2>/dev/null' \
+	</dev/null >/dev/null 2>&1 &
+disown 2>/dev/null || true
+
+echo "System apps will bounce momentarily. Restart manually when convenient to finalize all changes."

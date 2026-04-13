@@ -567,21 +567,8 @@ defaults write com.apple.messageshelper.MessageController SOInputLineSettings -d
 defaults write com.apple.messageshelper.MessageController SOInputLineSettings -dict-add "continuousSpellCheckingEnabled" -bool false
 
 
-echo "Done. Note that some of these changes require a logout/restart to take effect."
-echo "Killing affected applications..."
-
-for app in "Activity Monitor" \
-	"cfprefsd" \
-	"Contacts" \
-	"Dock" \
-	"Finder" \
-	"Mail" \
-	"Messages" \
-	"Photos" \
-	"Safari" \
-	"SystemUIServer" \
-	"Terminal"; do
-	killall "${app}" &> /dev/null
-done
-
-echo "macOS defaults applied. Some changes require a logout/restart."
+echo "macOS defaults applied."
+# NOTE: app restarts are handled by the run_onchange_after_30-restart-prompt
+# script, which either reboots or schedules a detached killall based on the
+# user's choice. Keeping that logic there avoids a race between this script
+# and 30 (a killall scheduled here would fire during 30's dialog).

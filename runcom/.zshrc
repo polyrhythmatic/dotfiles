@@ -94,22 +94,25 @@ zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
 # Shell Plugins
 # =====================
 
+# HOMEBREW_PREFIX is exported by `brew shellenv` in .zprofile
+# (/opt/homebrew on Apple Silicon, /usr/local on Intel)
+
 # fzf key bindings and completion
-if [ -f /opt/homebrew/opt/fzf/shell/key-bindings.zsh ]; then
-  source /opt/homebrew/opt/fzf/shell/key-bindings.zsh
+if [ -f "${HOMEBREW_PREFIX}/opt/fzf/shell/key-bindings.zsh" ]; then
+  source "${HOMEBREW_PREFIX}/opt/fzf/shell/key-bindings.zsh"
 fi
-if [ -f /opt/homebrew/opt/fzf/shell/completion.zsh ]; then
-  source /opt/homebrew/opt/fzf/shell/completion.zsh
+if [ -f "${HOMEBREW_PREFIX}/opt/fzf/shell/completion.zsh" ]; then
+  source "${HOMEBREW_PREFIX}/opt/fzf/shell/completion.zsh"
 fi
 
 # zsh-autosuggestions
-if [ -f /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]; then
-  source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+if [ -f "${HOMEBREW_PREFIX}/share/zsh-autosuggestions/zsh-autosuggestions.zsh" ]; then
+  source "${HOMEBREW_PREFIX}/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
 fi
 
 # zsh-syntax-highlighting (must be last plugin sourced)
-if [ -f /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]; then
-  source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+if [ -f "${HOMEBREW_PREFIX}/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ]; then
+  source "${HOMEBREW_PREFIX}/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
 fi
 
 # Prompt

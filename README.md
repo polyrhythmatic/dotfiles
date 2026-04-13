@@ -12,16 +12,45 @@ Personal configuration files for macOS, managed by [chezmoi](https://www.chezmoi
 Fresh machine (one command):
 
 ```bash
-sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply sethkranzler
+sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply polyrhythmatic
 ```
 
 Or if chezmoi is already installed:
 
 ```bash
-chezmoi init --apply sethkranzler
+chezmoi init --apply polyrhythmatic
 ```
 
 First run will prompt for your name and email (used in `.gitconfig`).
+
+### From a local clone (unpushed changes)
+
+If you have local edits that aren't pushed yet — e.g. bootstrapping a new
+machine where you can't push until the dotfiles generate an SSH key — point
+chezmoi at the local clone instead:
+
+```bash
+# 1. Install chezmoi (skip if already installed).
+#    The installer drops the binary at bin/chezmoi in the current directory
+#    — it is NOT added to PATH, so invoke it by relative path below.
+sh -c "$(curl -fsLS get.chezmoi.io)"
+
+# 2. Clone (or copy) this repo to the new machine, e.g. ~/dotfiles
+#    Then point chezmoi at it:
+bin/chezmoi init --source=~/dotfiles
+
+# 3. Preview changes before applying
+bin/chezmoi diff
+
+# 4. Apply
+bin/chezmoi apply -v
+```
+
+(Once the Brewfile installs the `chezmoi` Homebrew package during apply,
+later invocations can drop the `bin/` prefix.)
+
+After the first apply generates an SSH key and you've added it to GitHub,
+push your local changes and future machines can use the one-liner above.
 
 ## What it Does
 
@@ -99,3 +128,14 @@ See `testing/` directory:
 1. **Add SSH Key to GitHub:** The install script copies your public key to the clipboard. Add it at [github.com/settings/keys](https://github.com/settings/keys).
 2. **Restart:** Some macOS preferences require logout/restart to take effect.
 3. **Local shell additions:** External tools can safely append below the `LOCAL` marker in `~/.zshrc`.
+
+## Known Issues / TODO
+
+- **Audit legacy QuickLook plugins.** `qlcolorcode`, `qlstephen`, and `qlmarkdown`
+  in `Brewfile_cask` are legacy `.qlgenerator` plugins. Apple dropped support
+  for that format in macOS 15 (Sequoia) — they may install cleanly but do
+  nothing. `quicklook-json` was already disabled by Homebrew on 2025-12-23 for
+  the same reason and has been removed. A modern replacement for `qlcolorcode`
+  is [`syntax-highlight`](https://formulae.brew.sh/cask/syntax-highlight) by
+  sbarex, which uses the newer QuickLook App Extension API. Needs verification
+  on macOS 15+ before swapping.

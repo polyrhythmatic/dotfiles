@@ -12,6 +12,6 @@ eval "$(/usr/local/bin/brew shellenv)"
 {{ end -}}
 
 echo "Installing GUI applications from Brewfile_cask..."
-brew bundle --no-lock --file="{{ .chezmoi.sourceDir }}/Brewfile_cask"
+brew bundle --file="{{ .chezmoi.sourceDir }}/Brewfile_cask"
 
 echo "GUI applications installed."
