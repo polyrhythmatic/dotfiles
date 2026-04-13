@@ -1,4 +1,4 @@
-# Seth Kranzler's Dotfiles
+# Dotfiles
 
 Personal configuration files for macOS, managed by [chezmoi](https://www.chezmoi.io/). Optimized for Apple Silicon and Zsh.
 
