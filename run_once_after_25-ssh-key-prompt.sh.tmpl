@@ -4,12 +4,17 @@
 # the public key emitted by run_once_before_06-setup-ssh.sh gets buried in
 # thousands of lines of brew/defaults output and the user never sees it.
 #
+# After the key is added to GitHub, a follow-up dialog offers to verify
+# SSH auth and rewrite the dotfiles remote from HTTPS to SSH so future
+# `git push` from this clone works without credentials.
+#
 # Runs once per machine. Pairs with run_once_before_06-setup-ssh.sh, but
 # split out so the dialog fires when the user is actually paying attention.
 
 set -euo pipefail
 
 KEY_PATH="$HOME/.ssh/id_ed25519.pub"
+DOTFILES_DIR="{{ .chezmoi.sourceDir }}"
 
 if [ ! -f "$KEY_PATH" ]; then
 	echo "No SSH public key at $KEY_PATH — skipping prompt."
@@ -22,6 +27,7 @@ pbcopy < "$KEY_PATH"
 
 PUB_KEY=$(cat "$KEY_PATH")
 
+# --- Dialog 1: show the key ------------------------------------------------
 CHOICE=$(osascript <<APPLESCRIPT 2>/dev/null || echo "Done"
 display dialog "Your SSH public key has been copied to the clipboard.
 
@@ -32,9 +38,78 @@ button returned of result
 APPLESCRIPT
 )
 
-if [ "$CHOICE" = "Open GitHub" ]; then
-	open "https://github.com/settings/keys"
-	echo "Opened https://github.com/settings/keys — paste from clipboard to add the key."
-else
+if [ "$CHOICE" != "Open GitHub" ]; then
 	echo "SSH key is on your clipboard. Add it later at https://github.com/settings/keys"
+	exit 0
 fi
+
+open "https://github.com/settings/keys"
+echo "Opened https://github.com/settings/keys — paste from clipboard to add the key."
+
+# --- Dialog 2: verify + switch remote -------------------------------------
+# Loop so the user can retry if they haven't finished adding the key yet.
+while true; do
+	VERIFY=$(osascript <<'APPLESCRIPT' 2>/dev/null || echo "Skip"
+display dialog "Once you've added the key on GitHub, click Verify to test SSH auth and switch your dotfiles repo to use SSH (so future git push works without credentials)." buttons {"Skip", "Verify & Switch"} default button "Verify & Switch" with icon note with title "Dotfiles — Verify SSH"
+button returned of result
+APPLESCRIPT
+	)
+
+	if [ "$VERIFY" != "Verify & Switch" ]; then
+		echo "Skipped SSH remote switch. Run manually later:"
+		echo "  cd $DOTFILES_DIR && git remote set-url origin git@github.com:<user>/<repo>.git"
+		exit 0
+	fi
+
+	# Test SSH auth. GitHub's SSH service exits 1 even on success (no shell
+	# granted), so we parse stderr for the success message.
+	SSH_OUTPUT=$(ssh -T -o StrictHostKeyChecking=accept-new -o BatchMode=yes git@github.com 2>&1 || true)
+
+	if echo "$SSH_OUTPUT" | grep -q "successfully authenticated"; then
+		echo "SSH auth to GitHub succeeded."
+		break
+	fi
+
+	# Auth failed — offer to retry or skip.
+	RETRY=$(osascript <<APPLESCRIPT 2>/dev/null || echo "Skip"
+display dialog "SSH auth to GitHub failed. Make sure you saved the key on the GitHub page, then try again.
+
+Error:
+$SSH_OUTPUT" buttons {"Skip", "Retry"} default button "Retry" with icon caution with title "Dotfiles — SSH Verify Failed"
+button returned of result
+APPLESCRIPT
+	)
+
+	if [ "$RETRY" != "Retry" ]; then
+		echo "Skipped SSH remote switch."
+		exit 0
+	fi
+done
+
+# --- Switch the dotfiles remote to SSH -------------------------------------
+if [ ! -d "$DOTFILES_DIR/.git" ]; then
+	echo "$DOTFILES_DIR is not a git repo — skipping remote switch."
+	exit 0
+fi
+
+CURRENT_URL=$(git -C "$DOTFILES_DIR" remote get-url origin 2>/dev/null || echo "")
+
+if [ -z "$CURRENT_URL" ]; then
+	echo "No 'origin' remote in $DOTFILES_DIR — skipping."
+	exit 0
+fi
+
+if [[ "$CURRENT_URL" == git@github.com:* ]]; then
+	echo "$DOTFILES_DIR origin is already SSH — nothing to switch."
+	exit 0
+fi
+
+# Convert https://github.com/owner/repo(.git) → git@github.com:owner/repo.git
+SSH_URL=$(echo "$CURRENT_URL" | sed -E 's#^https://github\.com/#git@github.com:#; s#(\.git)?$#.git#')
+
+git -C "$DOTFILES_DIR" remote set-url origin "$SSH_URL"
+echo "Switched $DOTFILES_DIR origin: $CURRENT_URL → $SSH_URL"
+
+osascript <<APPLESCRIPT 2>/dev/null || true
+display notification "Dotfiles repo now uses SSH for git push." with title "Dotfiles — SSH Switched"
+APPLESCRIPT
