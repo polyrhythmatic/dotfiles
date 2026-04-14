@@ -20,7 +20,7 @@ brew bundle --file="{{ .chezmoi.sourceDir }}/Brewfile_cli"
 {{ if eq .chezmoi.arch "arm64" -}}
 # tart requires Apple Silicon (Virtualization.framework ARM)
 echo "Installing tart (Apple Silicon only)..."
-brew install tart
+brew install cirruslabs/cli/tart
 {{ end -}}
 
 echo "Installing browsers for CLI tools..."
