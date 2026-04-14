@@ -21,6 +21,10 @@ remove_if_symlink "$HOME/.gitignore"
 remove_if_symlink "$HOME/.config/ghostty/config"
 remove_if_symlink "$HOME/.config/ghostty/themes/Alabaster Dark"
 
+# Shell rc files (were symlinked)
+remove_if_symlink "$HOME/.zshrc"
+remove_if_symlink "$HOME/.zprofile"
+
 # Starship config (was symlinked)
 remove_if_symlink "$HOME/.config/starship.toml"
 
