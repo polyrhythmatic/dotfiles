@@ -22,6 +22,18 @@ if [ ! -f "$KEY_PATH" ]; then
 	exit 0
 fi
 
+# If SSH to GitHub already works, the key is already on the account — skip
+# the whole prompt. Without this, any future edit to this script changes its
+# content hash and chezmoi re-runs it, popping the "add key to GitHub" dialog
+# on every apply even though nothing is wrong. GitHub's SSH endpoint always
+# exits non-zero (no shell granted), so we capture output first and grep it
+# separately — piping ssh|grep would let pipefail propagate ssh's exit code.
+GH_SSH_CHECK=$(ssh -T -o StrictHostKeyChecking=accept-new -o BatchMode=yes -o ConnectTimeout=5 git@github.com </dev/null 2>&1 || true)
+if echo "$GH_SSH_CHECK" | grep -q "successfully authenticated"; then
+	echo "SSH to GitHub already works — skipping key prompt."
+	exit 0
+fi
+
 # Re-copy to clipboard in case earlier scripts overwrote it.
 pbcopy < "$KEY_PATH"
 

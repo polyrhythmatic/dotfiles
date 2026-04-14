@@ -83,6 +83,11 @@ setopt EXTENDED_HISTORY
 setopt SHARE_HISTORY
 setopt INC_APPEND_HISTORY
 
+# Force emacs keymap. Without this, zsh auto-picks vi mode because
+# EDITOR=vim, which leaves Option+Arrow (\eb/\ef from Ghostty) unbound
+# and inserts the raw escape sequence as text on the command line.
+bindkey -e
+
 # Zsh Completion System
 # =====================
 autoload -Uz compinit && compinit
