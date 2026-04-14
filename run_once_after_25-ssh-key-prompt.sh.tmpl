@@ -63,7 +63,10 @@ APPLESCRIPT
 
 	# Test SSH auth. GitHub's SSH service exits 1 even on success (no shell
 	# granted), so we parse stderr for the success message.
-	SSH_OUTPUT=$(ssh -T -o StrictHostKeyChecking=accept-new -o BatchMode=yes git@github.com 2>&1 || true)
+	# </dev/null is critical: without it, when this script is piped to
+	# `bash` for testing, ssh inherits the pipe as stdin and consumes the
+	# rest of the script before bash can read it.
+	SSH_OUTPUT=$(ssh -T -o StrictHostKeyChecking=accept-new -o BatchMode=yes git@github.com </dev/null 2>&1 || true)
 
 	if echo "$SSH_OUTPUT" | grep -q "successfully authenticated"; then
 		echo "SSH auth to GitHub succeeded."
