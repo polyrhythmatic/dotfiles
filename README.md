@@ -65,21 +65,30 @@ push your local changes and future machines can use the one-liner above.
 - **Shell plugins** — fzf, zsh-autosuggestions, zsh-syntax-highlighting
 - **SSH key** generation and GitHub config
 - **macOS preferences** via `defaults write` (audited for modern macOS)
-- **Claude Code** — symlinks standards, skills, agents, settings, and MCP config into `~/.claude/`
+- **AI agent config** — `rulesync` distributes skills, subagents, and external sources to Claude Code, Codex CLI, Cursor, Warp, and Gemini CLI. `~/.claude/settings.json` managed via merge script.
 
-## Claude Code Multi-Agent Setup
+## AI Agent Config (rulesync)
 
-The `claude/` directory contains a portable multi-agent configuration:
+The `.rulesync/` directory is the source of truth for AI agent config across
+Claude Code, Codex CLI, Cursor, Warp, and Gemini CLI. `rulesync generate
+--global` writes the right files into each tool's expected paths on every
+`chezmoi apply` (via `run_after_15-rulesync-generate.sh.tmpl`).
 
 ```
-claude/
-  standards/       # Shared coding standards
-  skills/          # Skill definitions (design-reviewer, dev-reviewer, etc.)
-  agents/          # Agent definitions (design-system-component, figma-design-qa)
-  ARCHITECTURE.md  # Detailed architecture documentation
+rulesync.jsonc                   # Targets + external skill sources
+.rulesync/
+  ARCHITECTURE.md                # Detailed setup notes
+  skills/                        # Custom skills (per-target via frontmatter)
+  subagents/                     # Custom subagents
 ```
 
-Chezmoi symlinks these into `~/.claude/` so Claude Code picks them up automatically.
+External skills (difit, agent-browser, chrome-devtools, google workspace,
+playwright) are declared as `sources` in `rulesync.jsonc` and fetched via
+`rulesync install` using git transport (no GitHub API rate limits).
+
+`~/.claude/settings.json` (model, env vars, effort level) is managed by
+`private_dot_claude/modify_settings.json` — a merge script that preserves any
+keys Claude Code or rulesync writes (permissions, hooks).
 
 ## File Reference
 
@@ -87,17 +96,18 @@ Chezmoi symlinks these into `~/.claude/` so Claude Code picks them up automatica
 |----------------|--------|---------|
 | `dot_gitconfig.tmpl` | `~/.gitconfig` | Git config (templated) |
 | `dot_gitignore_global` | `~/.gitignore` | Global gitignore |
-| `modify_dot_zshrc` | `~/.zshrc` | Shell interactive config |
-| `modify_dot_zprofile` | `~/.zprofile` | Shell login/env config |
+| `modify_dot_zshrc` | `~/.zshrc` | Shell interactive config (modify script) |
+| `modify_dot_zprofile` | `~/.zprofile` | Shell login/env config (modify script) |
 | `private_dot_config/starship.toml` | `~/.config/starship.toml` | Starship prompt |
 | `private_dot_config/ghostty/` | `~/.config/ghostty/` | Ghostty terminal |
-| `private_dot_claude/` | `~/.claude/` | Claude Code symlinks |
+| `private_dot_claude/modify_settings.json` | `~/.claude/settings.json` | Claude Code settings (merge script) |
 | `Brewfile_cli` | (run script input) | CLI packages |
 | `Brewfile_cask` | (run script input) | GUI applications |
 | `runcom/.zshrc` | (sourced by modify script) | Zsh config source |
 | `runcom/.zprofile` | (sourced by modify script) | Zprofile config source |
 | `config/iterm2/Default.json` | (copied by run script) | iTerm2 Dynamic Profile |
-| `claude/` | (symlink targets) | Claude Code config |
+| `rulesync.jsonc` | (rulesync config) | rulesync targets + sources |
+| `.rulesync/` | (rulesync source) | AI agent skills/subagents (invisible to chezmoi) |
 
 ## Run Scripts
 
@@ -112,6 +122,7 @@ Chezmoi symlinks these into `~/.claude/` so Claude Code picks them up automatica
 | `run_once_before_06-setup-ssh.sh.tmpl` | once | SSH key generation |
 | `run_once_before_07-check-fonts.sh` | once | Berkeley Mono font check |
 | `run_after_10-iterm2-profile.sh.tmpl` | after | iTerm2 Dynamic Profile |
+| `run_after_15-rulesync-generate.sh.tmpl` | after | `rulesync install && generate --global` |
 | `run_onchange_after_20-macos-defaults.sh.tmpl` | onchange | macOS system preferences |
 
 ## Testing
@@ -128,6 +139,29 @@ See `testing/` directory:
 1. **Add SSH Key to GitHub:** The install script copies your public key to the clipboard. Add it at [github.com/settings/keys](https://github.com/settings/keys).
 2. **Restart:** Some macOS preferences require logout/restart to take effect.
 3. **Local shell additions:** External tools can safely append below the `LOCAL` marker in `~/.zshrc`.
+
+## Handling External Changes
+
+Most files chezmoi manages are plain templates — `chezmoi apply` overwrites
+whatever's at the target path. If you (or a tool) edit a file like
+`~/.gitconfig` or `~/.config/ghostty/config` directly, those changes are lost
+on next apply.
+
+**Workflow to avoid lost changes:**
+
+```bash
+chezmoi diff      # preview what apply would change
+chezmoi re-add    # if diff shows external changes you want to keep,
+                  # pull them back into the dotfiles source first
+chezmoi apply     # then apply
+```
+
+**Exceptions** (files with built-in merge handling — safe to edit at the target):
+
+- `~/.zshrc`, `~/.zprofile` — `modify_` scripts preserve everything below the
+  `# --- LOCAL ---` marker
+- `~/.claude/settings.json` — `modify_` script deep-merges base settings with
+  whatever Claude Code or rulesync writes
 
 ## Known Issues / TODO
 
