@@ -1,6 +1,7 @@
 ---
 name: orchestrator
 description: Decomposes complex tasks into subtasks and dispatches them to specialized agents. Use when a task involves multiple distinct workstreams that benefit from context isolation.
+targets: ["claudecode"]
 ---
 
 # Orchestrator

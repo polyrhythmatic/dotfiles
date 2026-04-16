@@ -27,10 +27,4 @@ echo "Installing browsers for CLI tools..."
 command -v agent-browser &>/dev/null && agent-browser install
 command -v playwright-cli &>/dev/null && playwright-cli install
 
-echo "Installing CLI skills..."
-cd "$HOME"
-command -v playwright-cli &>/dev/null && playwright-cli install --skills
-npx -y skills add vercel-labs/agent-browser -y
-npx -y skills add ChromeDevTools/chrome-devtools-mcp -y
-
 echo "CLI packages installed."

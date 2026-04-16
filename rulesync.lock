@@ -1,0 +1,202 @@
+{
+  "lockfileVersion": 1,
+  "sources": {
+    "yoshiko-pg/difit": {
+      "requestedRef": "main",
+      "resolvedRef": "e77bb2d69d95674a634b133ababb4f04df9d5ba4",
+      "resolvedAt": "2026-04-16T17:55:32.018Z",
+      "skills": {
+        "difit": {
+          "integrity": "sha256-22f7e89ad93c08f5a3036af4ef1542afcbe67f71129d2386c25bcb46d8eb047f"
+        },
+        "difit-review": {
+          "integrity": "sha256-51e7f77f3b0ae03103ae4ff2179219d1072e62f1a624c81efe1e56cee842f252"
+        }
+      }
+    },
+    "vercel-labs/agent-browser": {
+      "requestedRef": "main",
+      "resolvedRef": "c201623710af417a6b8d3fd5479a145452b66362",
+      "resolvedAt": "2026-04-16T17:55:33.114Z",
+      "skills": {
+        "agent-browser": {
+          "integrity": "sha256-7efc1eaf54858fcd4a130322286d189379963caed1d0dae927426fe44bafe0db"
+        }
+      }
+    },
+    "chromedevtools/chrome-devtools-mcp": {
+      "requestedRef": "main",
+      "resolvedRef": "e102a43bab90bea4181e582ed9a7d59fbff355a4",
+      "resolvedAt": "2026-04-16T17:55:34.138Z",
+      "skills": {
+        "a11y-debugging": {
+          "integrity": "sha256-ce12f2bb4cfb0c5716a9471afdc53a3f236d924756d0d213d8c852db1926a733"
+        },
+        "chrome-devtools": {
+          "integrity": "sha256-2f0d4a57e4b18b84e4f4e81fe614909f9d954193abc0dbc7f78fad5fd9568fb2"
+        },
+        "chrome-devtools-cli": {
+          "integrity": "sha256-97aab4131e37a5a38d170c11a01cfbdd15c2ded6443354df87e75a6d309b971e"
+        },
+        "debug-optimize-lcp": {
+          "integrity": "sha256-60f6e5d4dea5c3aa7656e322efcbd4d9183b1f194dcbdaa4e69ea38df0588dda"
+        },
+        "memory-leak-debugging": {
+          "integrity": "sha256-462587d4b20301f1d3190089a6be21a993248f6df463aa579f0290466c6e60f1"
+        },
+        "troubleshooting": {
+          "integrity": "sha256-3695819c2fb5918e727a2cf9af952ab9bdfbb476274deff9fb7d72c5652dcfd1"
+        }
+      }
+    },
+    "googleworkspace/cli": {
+      "requestedRef": "main",
+      "resolvedRef": "a3768d0e82ad83cca2da97724e46bea4ff0e6dbd",
+      "resolvedAt": "2026-04-16T17:55:35.368Z",
+      "skills": {
+        "gws-calendar": {
+          "integrity": "sha256-eda5000f5e3ea56b0f4a744b6c4b72669eb5def8e911d2a4df386e1a2ab6c7e5"
+        },
+        "gws-calendar-agenda": {
+          "integrity": "sha256-e23f23eead96410d3aecf8919c76e68af6380ddb2a5e5ad50b6154b578bb54fa"
+        },
+        "gws-calendar-insert": {
+          "integrity": "sha256-807fc18b5832477b25809aa96ef6e97cfbd1d55f2e9e03d2dd3f0aaa3e49139e"
+        },
+        "gws-docs": {
+          "integrity": "sha256-fc1d1a8bd55bfc6b7f592588199f52cff18955e04f9cbc3e2ee612b52fe147b2"
+        },
+        "gws-docs-write": {
+          "integrity": "sha256-3791bc32375c19c896ea7021108cad3fabe3ca9fa1d78cd32a38e4d957b714d1"
+        },
+        "gws-drive": {
+          "integrity": "sha256-6b860e7edc461e42e02ce05bb912cadb93a1f5692d50e127a09ac6025fc4bec2"
+        },
+        "gws-drive-upload": {
+          "integrity": "sha256-2f816853e23781263f1fd79ba79b4ec7b5db976ed5dcae1e9f55f5c2f64bbd10"
+        },
+        "gws-forms": {
+          "integrity": "sha256-989ac06bd43d7cec035212bdb34d9281b89f84320f401e8394b7f7d404106110"
+        },
+        "gws-gmail": {
+          "integrity": "sha256-23940a8c581fea6c0b080e0fcdc5280705ab48278eb6855af5beaef65b9b1d9b"
+        },
+        "gws-gmail-forward": {
+          "integrity": "sha256-c3cca62794140df2356622fb369cf75dd3d7a0e320202fbced022ffba1a738c6"
+        },
+        "gws-gmail-read": {
+          "integrity": "sha256-258c3e542c3ebdd50911c59f126610b8a0c8a44cc16a10b3c0433ca4c6a7a56a"
+        },
+        "gws-gmail-reply": {
+          "integrity": "sha256-b6d00739f14bb095c0453a9a79f5b85b22a77579984a46c782068372bda61b41"
+        },
+        "gws-gmail-reply-all": {
+          "integrity": "sha256-d5e4953102c38515ab1ee58a1124fd32fed1436d1c6cc2979d52d9f0051085e2"
+        },
+        "gws-gmail-send": {
+          "integrity": "sha256-2cd2af3dc3d82a73c15da4d36b23b6e24c562b68f48358ca5fecb664761a0374"
+        },
+        "gws-gmail-triage": {
+          "integrity": "sha256-bd168fa637c5186aaa88358952fed62c1d8de0cb455d7941b4c55132252f89bd"
+        },
+        "gws-meet": {
+          "integrity": "sha256-21f1106142afb7e407da8b2c7853c03b5e40ae928ecd68113b09b852a80763b4"
+        },
+        "gws-people": {
+          "integrity": "sha256-ca35e0f681753676f7821bb4760d1342d1d372319bad1f03afdc0a6c219777d1"
+        },
+        "gws-script": {
+          "integrity": "sha256-7d0c87cb886ec160ac4f9d1433b69849d64610d40e92d886d373e437c8c98320"
+        },
+        "gws-script-push": {
+          "integrity": "sha256-d5a07d7f2bae35a9fc0a3bb92a99344e9376dd05de4bfe5ae06baa9efef8de7d"
+        },
+        "gws-shared": {
+          "integrity": "sha256-7dd8dacb7928cb9ebdf77d92f2921fd6f31e73fd6a746018ef8e54e33097a040"
+        },
+        "gws-sheets": {
+          "integrity": "sha256-39c019ffadb4ad2e426d9ae4eb26b312d1102d0d8bf7eefc920b149bd5868496"
+        },
+        "gws-sheets-append": {
+          "integrity": "sha256-9dd982eecdf6b7784df0a4cead586276a6641cd63c5be2d93f7abd0eda0a2c8d"
+        },
+        "gws-sheets-read": {
+          "integrity": "sha256-7064ae4bd8a2f68884f41756bf9055913fb652eac499b7808016ed96c819005a"
+        },
+        "gws-slides": {
+          "integrity": "sha256-6242cd2e6ebcdcad77041ba1bbaa6e9dcd1d65f38daa61b7ba96ed626dd409dc"
+        },
+        "recipe-backup-sheet-as-csv": {
+          "integrity": "sha256-c41acebc1186c791584f04eb8f987f9b03e57e76978ddb5a8fc7e4fafe1659e3"
+        },
+        "recipe-batch-invite-to-event": {
+          "integrity": "sha256-8e6115ca36be37c3108a51615bf362b1f6efff7a1b6dae4acb4a142fc7f2a6c0"
+        },
+        "recipe-bulk-download-folder": {
+          "integrity": "sha256-2fb08395d8669b3f9c6beb1df6de1f564f818ecbb2a5e562a222c96d171e85da"
+        },
+        "recipe-collect-form-responses": {
+          "integrity": "sha256-4c658e7b91169c63b162e368cf074aff9b99e85a35ec00cfc93ac4d53166ed89"
+        },
+        "recipe-compare-sheet-tabs": {
+          "integrity": "sha256-7e673219b3bbe6aa30e3ae9d5e8cec344386af3474145ef398cd664f6e58b17e"
+        },
+        "recipe-copy-sheet-for-new-month": {
+          "integrity": "sha256-e53175391a2643008eeba5223a55e4428b25cb7e43db0957de57db993c061fe7"
+        },
+        "recipe-create-doc-from-template": {
+          "integrity": "sha256-422c5fe97d1e077c6a651bd35d5476f6f1b816e060fc48d2fcb702a399f1a4f8"
+        },
+        "recipe-create-expense-tracker": {
+          "integrity": "sha256-262b4b5a5d8796df5b4d955bb1d9200e35188b709334a164011e2783acc13f03"
+        },
+        "recipe-create-feedback-form": {
+          "integrity": "sha256-791e48d64152bdc4c27b0fbc36e74339eb1307380b46b18e02102c4454437705"
+        },
+        "recipe-create-gmail-filter": {
+          "integrity": "sha256-9a02fcf8814129f9687d391f70eb4a563609db846a42c056998fcbd05d886436"
+        },
+        "recipe-create-presentation": {
+          "integrity": "sha256-f2344ac50e5c9fbad157e4ae68309b4852764540345646412968393f0ba95404"
+        },
+        "recipe-create-vacation-responder": {
+          "integrity": "sha256-54956bbea03d594ff33c376131dbc645d013401809660ba25ff17a28bd3d24e4"
+        },
+        "recipe-find-large-files": {
+          "integrity": "sha256-a853da82a103892c24c41561b65f6d37af55574c209c6a9b0ccfd16f5ffc5efd"
+        },
+        "recipe-generate-report-from-sheet": {
+          "integrity": "sha256-d96050c953311847bf1eeaf44f2b0348fd8cf5cf099a7edfc2cfa51ae57365a2"
+        },
+        "recipe-label-and-archive-emails": {
+          "integrity": "sha256-a8dffb47edcae57a80ce5f14864e71a4d3b5ecc03d5d2cb93e9e1ac687544341"
+        },
+        "recipe-organize-drive-folder": {
+          "integrity": "sha256-1638d3845b39235aefe505c634d19ac0023efc728003af291dbea017f01e7082"
+        },
+        "recipe-reschedule-meeting": {
+          "integrity": "sha256-8b6b5e1c34b06207fe968d7f23b7f9540a85bf7b021d081296b9d5a4c02dcd61"
+        },
+        "recipe-save-email-attachments": {
+          "integrity": "sha256-f4678e117462adfe3c81cfc4830c77dd573e3db6d13826c88c2bc7bb4b71a90d"
+        },
+        "recipe-schedule-recurring-event": {
+          "integrity": "sha256-3670f92a7b0b2faf8b003fd8c0b7a34525fa470ee41d1a7c0c5f526f1f0ba1dc"
+        },
+        "recipe-share-doc-and-notify": {
+          "integrity": "sha256-b6d1fe26dd03f1389d2a3dbf674448423e807be0ce51101c995e648c702f1fe2"
+        }
+      }
+    },
+    "microsoft/playwright-cli": {
+      "requestedRef": "main",
+      "resolvedRef": "0406adaed4c6ba95bbfa6952229e76188bc59993",
+      "resolvedAt": "2026-04-16T17:55:36.195Z",
+      "skills": {
+        "playwright-cli": {
+          "integrity": "sha256-b25589ecbaec6a129f003bee1ecca1b8b3849bf42c90781975008e066df2b82f"
+        }
+      }
+    }
+  }
+}

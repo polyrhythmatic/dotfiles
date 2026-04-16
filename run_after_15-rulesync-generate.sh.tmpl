@@ -1,0 +1,27 @@
+{{ "#!/bin/bash" }}
+# Generate AI agent rules across all configured targets.
+# Runs on every chezmoi apply to keep generated configs in sync.
+
+set -euo pipefail
+
+{{ if eq .chezmoi.arch "arm64" -}}
+eval "$(/opt/homebrew/bin/brew shellenv)"
+{{ else -}}
+eval "$(/usr/local/bin/brew shellenv)"
+{{ end -}}
+
+if ! command -v rulesync &>/dev/null; then
+  echo "rulesync not found — skipping rule generation."
+  exit 0
+fi
+
+DOTFILES="{{ .chezmoi.sourceDir }}"
+cd "$DOTFILES"
+
+echo "Installing rulesync sources..."
+rulesync install
+
+echo "Generating rules for all targets (global)..."
+rulesync generate --global
+
+echo "AI agent rules generated."

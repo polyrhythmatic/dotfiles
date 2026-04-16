@@ -1,0 +1,47 @@
+{
+  "$schema": "https://github.com/dyoshikawa/rulesync/releases/latest/download/config-schema.json",
+  "targets": {
+    "claudecode": {
+      "subagents": true,
+      "skills": true
+    },
+    "codexcli": {
+      "subagents": true,
+      "skills": true
+    },
+    "cursor": {
+      "skills": true
+    },
+    "warp": {
+      "skills": true
+    },
+    "geminicli": {
+      "skills": true
+    }
+  },
+  "sources": [
+    { "source": "https://github.com/yoshiko-pg/difit.git", "transport": "git" },
+    { "source": "https://github.com/vercel-labs/agent-browser.git", "transport": "git" },
+    { "source": "https://github.com/ChromeDevTools/chrome-devtools-mcp.git", "transport": "git" },
+    {
+      "source": "https://github.com/googleworkspace/cli.git",
+      "transport": "git",
+      "skills": [
+        "gws-shared",
+        "gws-gmail", "gws-gmail-send", "gws-gmail-read", "gws-gmail-reply", "gws-gmail-reply-all", "gws-gmail-forward", "gws-gmail-triage",
+        "gws-calendar", "gws-calendar-insert", "gws-calendar-agenda",
+        "gws-drive", "gws-drive-upload",
+        "gws-docs", "gws-docs-write",
+        "gws-sheets", "gws-sheets-read", "gws-sheets-append",
+        "gws-people", "gws-meet", "gws-forms", "gws-slides",
+        "gws-script", "gws-script-push",
+        "recipe-save-email-attachments", "recipe-create-vacation-responder", "recipe-create-gmail-filter", "recipe-label-and-archive-emails",
+        "recipe-reschedule-meeting", "recipe-schedule-recurring-event", "recipe-batch-invite-to-event",
+        "recipe-find-large-files", "recipe-organize-drive-folder", "recipe-bulk-download-folder", "recipe-backup-sheet-as-csv",
+        "recipe-share-doc-and-notify", "recipe-create-doc-from-template", "recipe-create-presentation", "recipe-create-feedback-form", "recipe-collect-form-responses",
+        "recipe-create-expense-tracker", "recipe-copy-sheet-for-new-month", "recipe-compare-sheet-tabs", "recipe-generate-report-from-sheet"
+      ]
+    },
+    { "source": "https://github.com/microsoft/playwright-cli.git", "transport": "git" }
+  ]
+}

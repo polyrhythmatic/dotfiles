@@ -1,5 +1,6 @@
 .DS_Store
 .claude/
+.rulesync/skills/.curated/
 *.swp
 *.swo
 *~

@@ -1,0 +1,42 @@
+#!/bin/bash
+# Merge base settings into ~/.claude/settings.json.
+# stdin = current file contents (from chezmoi).
+# Base settings always win; extra keys (permissions, hooks) are preserved.
+
+set -euo pipefail
+
+# Read stdin before heredoc steals it
+CURRENT="$(cat)" python3 << 'PYEOF'
+import json, os
+
+base = {
+    "model": "opus",
+    "effortLevel": "high",
+    "alwaysThinkingEnabled": True,
+    "attribution": {"commit": "", "pr": ""},
+    "env": {
+        "CLAUDE_CODE_DISABLE_1M_CONTEXT": "1",
+        "CLAUDE_CODE_DISABLE_ADAPTIVE_THINKING": "1",
+        "CLAUDE_CODE_DISABLE_AUTO_MEMORY": "1",
+        "CLAUDE_CODE_SUBAGENT_MODEL": "sonnet"
+    }
+}
+
+current_str = os.environ.get("CURRENT", "")
+try:
+    current = json.loads(current_str) if current_str.strip() else {}
+except json.JSONDecodeError:
+    current = {}
+
+def deep_merge(current, override):
+    result = dict(current)
+    for key, value in override.items():
+        if key in result and isinstance(result[key], dict) and isinstance(value, dict):
+            result[key] = deep_merge(result[key], value)
+        else:
+            result[key] = value
+    return result
+
+merged = deep_merge(current, base)
+print(json.dumps(merged, indent=2))
+PYEOF

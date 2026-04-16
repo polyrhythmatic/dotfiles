@@ -5,12 +5,16 @@ LICENSE
 
 # Source content directories (not applied directly)
 runcom/
-claude/
 config/iterm2/
 
 # Brewfiles (referenced by run scripts, not applied to ~)
 Brewfile_cli
 Brewfile_cask
+
+# rulesync (managed separately, not applied to ~)
+rulesync.jsonc
+rulesync.local.jsonc
+rulesync.lock
 
 # Testing infrastructure
 testing/
