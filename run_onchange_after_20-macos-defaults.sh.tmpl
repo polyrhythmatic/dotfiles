@@ -547,6 +547,16 @@ defaults write com.apple.commerce AutoUpdate -bool true
 defaults write com.apple.commerce AutoUpdateRestartRequired -bool true
 
 ###############################################################################
+# AppCleaner                                                                  #
+###############################################################################
+
+# Enable SmartDelete: watch the Trash and offer to remove an app's related
+# files when the app itself is trashed. The SmartDelete Agent is launched
+# once by run_once_after_24-appcleaner-launch.sh so macOS surfaces the TCC
+# permission prompts — those still need a manual click-through.
+defaults write net.freemacsoft.AppCleaner SmartDelete -bool true
+
+###############################################################################
 # Photos                                                                      #
 ###############################################################################
 

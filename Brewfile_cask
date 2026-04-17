@@ -1,5 +1,6 @@
 cask "xquartz"
 
+cask "1password"
 cask "appcleaner"
 cask "codex"
 cask "firefox"

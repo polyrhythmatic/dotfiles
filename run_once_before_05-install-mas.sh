@@ -1,5 +1,5 @@
 #!/bin/bash
-# Install Xcode from Mac App Store.
+# Install apps from the Mac App Store.
 
 set -euo pipefail
 
@@ -23,6 +23,16 @@ fi
 if command -v xcodebuild &>/dev/null; then
   echo "Accepting Xcode license..."
   sudo xcodebuild -license accept 2>/dev/null || echo "Could not accept license automatically."
+fi
+
+ONEPASSWORD_SAFARI_ID=1569813296
+ONEPASSWORD_SAFARI_PATH="/Applications/1Password for Safari.app"
+
+if [ -d "$ONEPASSWORD_SAFARI_PATH" ]; then
+  echo "1Password for Safari already installed."
+else
+  echo "Installing 1Password for Safari via Mac App Store..."
+  mas install $ONEPASSWORD_SAFARI_ID || echo "WARNING: 1Password for Safari install failed. Check App Store login."
 fi
 
 echo "mas script finished."
