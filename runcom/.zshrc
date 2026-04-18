@@ -88,6 +88,14 @@ setopt INC_APPEND_HISTORY
 # and inserts the raw escape sequence as text on the command line.
 bindkey -e
 
+# Pop any leaked kitty-keyboard-protocol flags before each prompt. TUIs
+# that crash or exit uncleanly leave the flags pushed, which silently
+# changes how the next TUI in the same window encodes modified keys
+# (e.g. cmd+backspace in Claude Code wipes the buffer instead of the line).
+autoload -Uz add-zsh-hook
+_reset_kitty_keyboard() { printf '\e[<u' }
+add-zsh-hook precmd _reset_kitty_keyboard
+
 # Zsh Completion System
 # =====================
 autoload -Uz compinit && compinit
