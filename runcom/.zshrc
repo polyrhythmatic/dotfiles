@@ -69,6 +69,16 @@ function timezsh {
 # fnm (Fast Node Manager)
 eval "$(fnm env --use-on-cd)"
 
+# Homebrew Ruby (system Ruby 2.6 is EOL) + gem-installed CLIs on PATH.
+# The gems/*/bin glob is version-proof across `brew upgrade ruby`.
+if [ -d "${HOMEBREW_PREFIX}/opt/ruby/bin" ]; then
+  export PATH="${HOMEBREW_PREFIX}/opt/ruby/bin:$PATH"
+  for _gembin in "${HOMEBREW_PREFIX}"/lib/ruby/gems/*/bin(N); do
+    export PATH="$_gembin:$PATH"
+  done
+  unset _gembin
+fi
+
 # History - Zsh specific settings
 # =====================
 export HISTSIZE=32768
