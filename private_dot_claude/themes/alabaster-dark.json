@@ -1,0 +1,42 @@
+{
+  "name": "Alabaster Dark",
+  "base": "dark",
+  "overrides": {
+    "claude": "#915caf",
+    "text": "#CECECE",
+    "inverseText": "#0E1415",
+    "inactive": "#777777",
+    "subtle": "#9a9a9a",
+    "permission": "#e9bf57",
+    "remember": "#23acdd",
+
+    "success": "#73ca50",
+    "error": "#e25d56",
+    "warning": "#e9bf57",
+    "merged": "#915caf",
+
+    "promptBorder": "#3a3f40",
+    "planMode": "#4a88e4",
+    "autoAccept": "#73ca50",
+    "bashBorder": "#e9bf57",
+    "ide": "#23acdd",
+    "fastMode": "#e25d56",
+
+    "diffAdded": "#1a2e18",
+    "diffRemoved": "#2e1818",
+    "diffAddedDimmed": "#131e12",
+    "diffRemovedDimmed": "#1e1212",
+    "diffAddedWord": "#2a4525",
+    "diffRemovedWord": "#452525",
+
+    "userMessageBackground": "#1a2122",
+    "selectionBg": "#293334",
+
+    "red_FOR_SUBAGENTS_ONLY": "#e25d56",
+    "green_FOR_SUBAGENTS_ONLY": "#73ca50",
+    "yellow_FOR_SUBAGENTS_ONLY": "#e9bf57",
+    "blue_FOR_SUBAGENTS_ONLY": "#4a88e4",
+    "purple_FOR_SUBAGENTS_ONLY": "#915caf",
+    "cyan_FOR_SUBAGENTS_ONLY": "#23acdd"
+  }
+}

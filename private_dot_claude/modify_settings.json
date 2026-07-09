@@ -10,8 +10,6 @@ CURRENT="$(cat)" python3 << 'PYEOF'
 import json, os
 
 base = {
-    "model": "claude-fable-5[1m]",
-    "effortLevel": "max",
     "alwaysThinkingEnabled": True,
     "skipDangerousModePermissionPrompt": True,
     "theme": "custom:alabaster-dark",
