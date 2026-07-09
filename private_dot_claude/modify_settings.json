@@ -10,15 +10,23 @@ CURRENT="$(cat)" python3 << 'PYEOF'
 import json, os
 
 base = {
-    "model": "opus",
-    "effortLevel": "high",
+    "model": "claude-fable-5[1m]",
+    "effortLevel": "max",
     "alwaysThinkingEnabled": True,
     "skipDangerousModePermissionPrompt": True,
+    "theme": "custom:alabaster-dark",
+    "statusLine": {
+        "type": "command",
+        "command": "~/.claude/statusline.sh",
+        "padding": 2,
+        "refreshInterval": 5
+    },
     "attribution": {"commit": "", "pr": ""},
     "env": {
         "CLAUDE_CODE_DISABLE_1M_CONTEXT": "1",
         "CLAUDE_CODE_DISABLE_ADAPTIVE_THINKING": "1",
-        "CLAUDE_CODE_DISABLE_AUTO_MEMORY": "1"
+        "CLAUDE_CODE_DISABLE_AUTO_MEMORY": "1",
+        "CLAUDE_CODE_NO_FLICKER": "1"
     }
 }
 
@@ -38,5 +46,40 @@ def deep_merge(current, override):
     return result
 
 merged = deep_merge(current, base)
+
+# Managed hooks are merged additively (never replace the hooks tree, so
+# machine-local hooks survive). Identified by command path; idempotent.
+MANAGED_HOOKS = [
+    (
+        "PreToolUse",
+        {
+            "matcher": "Bash",
+            "hooks": [
+                {
+                    "type": "command",
+                    "command": "~/.claude/hooks/browser-router-nudge.sh",
+                    "timeout": 10,
+                    "statusMessage": "Checking browser-tool routing",
+                }
+            ],
+        },
+    ),
+]
+
+hooks = merged.setdefault("hooks", {})
+for event, entry in MANAGED_HOOKS:
+    event_hooks = hooks.setdefault(event, [])
+    managed_cmds = {h["command"] for h in entry["hooks"]}
+    present = any(
+        isinstance(e, dict)
+        and any(
+            isinstance(h, dict) and h.get("command") in managed_cmds
+            for h in e.get("hooks", [])
+        )
+        for e in event_hooks
+    )
+    if not present:
+        event_hooks.append(entry)
+
 print(json.dumps(merged, indent=2))
 PYEOF

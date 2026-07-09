@@ -1,11 +1,16 @@
 README.md
+AGENTS.md
+CLAUDE.md
+SESSION-SUMMARY-*.md
 MIGRATION-PLAN.md
+BROWSER-TOOL-ROUTER-FINDINGS.md
 LICENSE
 .gitignore
 
 # Source content directories (not applied directly)
 runcom/
-config/iterm2/
+config/
+claude/
 
 # Brewfiles (referenced by run scripts, not applied to ~)
 Brewfile_cli
