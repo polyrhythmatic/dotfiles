@@ -3,8 +3,8 @@
   "sources": {
     "yoshiko-pg/difit": {
       "requestedRef": "main",
-      "resolvedRef": "e77bb2d69d95674a634b133ababb4f04df9d5ba4",
-      "resolvedAt": "2026-04-16T17:55:32.018Z",
+      "resolvedRef": "56e9692693750491f4cc61114d5fc6a3cbdbf44e",
+      "resolvedAt": "2026-04-29T13:55:44.233Z",
       "skills": {
         "difit": {
           "integrity": "sha256-22f7e89ad93c08f5a3036af4ef1542afcbe67f71129d2386c25bcb46d8eb047f"
@@ -16,24 +16,24 @@
     },
     "vercel-labs/agent-browser": {
       "requestedRef": "main",
-      "resolvedRef": "c201623710af417a6b8d3fd5479a145452b66362",
-      "resolvedAt": "2026-04-16T17:55:33.114Z",
+      "resolvedRef": "57405f93614fae46e5c955ce662b4785283e1301",
+      "resolvedAt": "2026-04-29T13:55:45.278Z",
       "skills": {
         "agent-browser": {
-          "integrity": "sha256-7efc1eaf54858fcd4a130322286d189379963caed1d0dae927426fe44bafe0db"
+          "integrity": "sha256-c19a532a3777698b80b35270939a1dc559da451381971b3e1e78174d1ab54863"
         }
       }
     },
     "chromedevtools/chrome-devtools-mcp": {
       "requestedRef": "main",
-      "resolvedRef": "e102a43bab90bea4181e582ed9a7d59fbff355a4",
-      "resolvedAt": "2026-04-16T17:55:34.138Z",
+      "resolvedRef": "f1afe842ae64128f0d1f0230da6b2efbe209fe20",
+      "resolvedAt": "2026-04-29T13:55:46.315Z",
       "skills": {
         "a11y-debugging": {
           "integrity": "sha256-ce12f2bb4cfb0c5716a9471afdc53a3f236d924756d0d213d8c852db1926a733"
         },
         "chrome-devtools": {
-          "integrity": "sha256-2f0d4a57e4b18b84e4f4e81fe614909f9d954193abc0dbc7f78fad5fd9568fb2"
+          "integrity": "sha256-bebbf4641f9edc30ad72c773d3b7ef558adec348910e1bbac03f74006a00e2a5"
         },
         "chrome-devtools-cli": {
           "integrity": "sha256-97aab4131e37a5a38d170c11a01cfbdd15c2ded6443354df87e75a6d309b971e"
@@ -45,14 +45,14 @@
           "integrity": "sha256-462587d4b20301f1d3190089a6be21a993248f6df463aa579f0290466c6e60f1"
         },
         "troubleshooting": {
-          "integrity": "sha256-3695819c2fb5918e727a2cf9af952ab9bdfbb476274deff9fb7d72c5652dcfd1"
+          "integrity": "sha256-b9e1349d9b9cebcd281df6e99de9aa8fbfb7f9dd3ae26ca64a563e33dff8932a"
         }
       }
     },
     "googleworkspace/cli": {
       "requestedRef": "main",
       "resolvedRef": "a3768d0e82ad83cca2da97724e46bea4ff0e6dbd",
-      "resolvedAt": "2026-04-16T17:55:35.368Z",
+      "resolvedAt": "2026-04-29T13:55:47.453Z",
       "skills": {
         "gws-calendar": {
           "integrity": "sha256-eda5000f5e3ea56b0f4a744b6c4b72669eb5def8e911d2a4df386e1a2ab6c7e5"
@@ -190,11 +190,44 @@
     },
     "microsoft/playwright-cli": {
       "requestedRef": "main",
-      "resolvedRef": "0406adaed4c6ba95bbfa6952229e76188bc59993",
-      "resolvedAt": "2026-04-16T17:55:36.195Z",
+      "resolvedRef": "ee24ded1770c7a4f7a8cbb8e22aac9812e151feb",
+      "resolvedAt": "2026-04-29T13:55:48.423Z",
       "skills": {
         "playwright-cli": {
-          "integrity": "sha256-b25589ecbaec6a129f003bee1ecca1b8b3849bf42c90781975008e066df2b82f"
+          "integrity": "sha256-06c818d74cb47227f56c9c9ccdba415c35b1ac8384fe077a9edb3801c17f0989"
+        }
+      }
+    },
+    "mattpocock/skills": {
+      "requestedRef": "main",
+      "resolvedRef": "d574778f94cf620fcc8ce741584093bc650a61d3",
+      "resolvedAt": "2026-07-09T22:44:22.281Z",
+      "skills": {
+        "grill-me": {
+          "integrity": "sha256-25b02cbdacb3d7fcf0fdea243cb8358cc5ba1e85800d0974b028f6e8bacac94d"
+        },
+        "grilling": {
+          "integrity": "sha256-1468bb9078a95a6672a687cd37b97cbc25be2584ec327400b94613e69a1f5956"
+        }
+      }
+    },
+    "cursor/plugins": {
+      "requestedRef": "main",
+      "resolvedRef": "0dda29e839d15464a137af9935665a5a47ee09b8",
+      "resolvedAt": "2026-07-09T22:44:23.293Z",
+      "skills": {
+        "thermo-nuclear-code-quality-review": {
+          "integrity": "sha256-1bb59994582195f4e209546efe5f9fc5d05d6f19c91d5b18048d0f2186a4fbd2"
+        }
+      }
+    },
+    "blader/humanizer": {
+      "requestedRef": "main",
+      "resolvedRef": "1b48564898e999219882660237fde01bf4843a0f",
+      "resolvedAt": "2026-07-09T22:45:24.648Z",
+      "skills": {
+        "humanizer": {
+          "integrity": "sha256-b53217b1e07d1c54f255ee7b5e790cc986e3868e7531c7414eb4339d4c08958b"
         }
       }
     }

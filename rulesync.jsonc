@@ -44,6 +44,24 @@
         "recipe-create-expense-tracker", "recipe-copy-sheet-for-new-month", "recipe-compare-sheet-tabs", "recipe-generate-report-from-sheet"
       ]
     },
-    { "source": "https://github.com/microsoft/playwright-cli.git", "transport": "git" }
+    { "source": "https://github.com/microsoft/playwright-cli.git", "transport": "git" },
+    {
+      "source": "https://github.com/blader/humanizer.git",
+      "transport": "git",
+      "path": ".",
+      "skills": ["humanizer"]
+    },
+    {
+      "source": "https://github.com/mattpocock/skills.git",
+      "transport": "git",
+      "path": "skills/productivity",
+      "skills": ["grill-me", "grilling"]
+    },
+    {
+      "source": "https://github.com/cursor/plugins.git",
+      "transport": "git",
+      "path": "cursor-team-kit/skills",
+      "skills": ["thermo-nuclear-code-quality-review"]
+    }
   ]
 }
