@@ -1,0 +1,604 @@
+#!/bin/bash
+# Dotfiles operator CLI.
+# A quiet, agent-friendly wrapper around chezmoi, Homebrew, rulesync, and git.
+
+set -euo pipefail
+
+VERBOSE=0
+YES=0
+
+if [ -t 1 ]; then
+  BOLD=$'\033[1m'
+  DIM=$'\033[2m'
+  RED=$'\033[31m'
+  YELLOW=$'\033[33m'
+  GREEN=$'\033[32m'
+  RESET=$'\033[0m'
+else
+  BOLD=""
+  DIM=""
+  RED=""
+  YELLOW=""
+  GREEN=""
+  RESET=""
+fi
+
+usage() {
+  cat <<'EOF'
+Usage:
+  dotfiles doctor
+  dotfiles status
+  dotfiles preview [--verbose]
+  dotfiles apply [--yes] [--verbose]
+  dotfiles sync-ai [--dry-run|--apply] [--verbose]
+  dotfiles brew check|install|update [--yes] [--verbose]
+  dotfiles repo status|pull|push|commit [--all] --message "message"
+  dotfiles pull-apply [--yes] [--verbose]
+
+Defaults are intentionally quiet. Use --verbose for raw command output.
+Commands that write in non-interactive sessions require --yes or --apply.
+EOF
+}
+
+say() {
+  printf '%s\n' "$*"
+}
+
+ok() {
+  say "${GREEN}[OK]${RESET} $*"
+}
+
+warn() {
+  say "${YELLOW}[WARN]${RESET} $*"
+}
+
+fail() {
+  say "${RED}[FAIL]${RESET} $*" >&2
+}
+
+note() {
+  say "${DIM}[INFO]${RESET} $*"
+}
+
+die() {
+  fail "$*"
+  exit 1
+}
+
+need() {
+  command -v "$1" >/dev/null 2>&1 || die "$1 is not installed or not on PATH"
+}
+
+resolve_source_dir() {
+  need chezmoi
+  local source_dir
+  source_dir=$(chezmoi source-path 2>/dev/null) || die "chezmoi source path is not configured"
+  [ -d "$source_dir" ] || die "chezmoi source path does not exist: $source_dir"
+  printf '%s\n' "$source_dir"
+}
+
+SOURCE_DIR=$(resolve_source_dir)
+
+confirm_write() {
+  local action="$1"
+  if [ "$YES" -eq 1 ]; then
+    return 0
+  fi
+
+  if [ ! -t 0 ]; then
+    die "Refusing to $action without --yes because stdin is not interactive"
+  fi
+
+  printf '%s [y/N] ' "$action"
+  local answer
+  read -r answer
+  case "$answer" in
+    y|Y|yes|YES)
+      ;;
+    *)
+      die "Cancelled"
+      ;;
+  esac
+}
+
+run_capture() {
+  local label="$1"
+  shift
+  local output status
+  output=$(mktemp)
+  if [ "$VERBOSE" -eq 1 ]; then
+    note "$label"
+    "$@"
+    return $?
+  fi
+
+  if "$@" >"$output" 2>&1; then
+    rm -f "$output"
+    return 0
+  fi
+
+  status=$?
+  fail "$label failed"
+  sed -n '1,220p' "$output" >&2
+  rm -f "$output"
+  return "$status"
+}
+
+capture_output() {
+  local output
+  output=$(mktemp)
+  if "$@" >"$output" 2>&1; then
+    cat "$output"
+    rm -f "$output"
+    return 0
+  fi
+  local status=$?
+  cat "$output"
+  rm -f "$output"
+  return "$status"
+}
+
+summarize_chezmoi_status() {
+  local status="$1"
+  if [ -z "$status" ]; then
+    ok "chezmoi target state is clean"
+    return 0
+  fi
+
+  local total scripts files
+  total=$(printf '%s\n' "$status" | sed '/^$/d' | wc -l | tr -d ' ')
+  scripts=$(printf '%s\n' "$status" | awk 'substr($0,2,1)=="R" {n++} END {print n+0}')
+  files=$((total - scripts))
+
+  warn "chezmoi has pending work: ${files} file/dir change(s), ${scripts} script(s) to run"
+  printf '%s\n' "$status" | sed -n '1,30p'
+  if [ "$total" -gt 30 ]; then
+    note "showing first 30 of $total status lines; use --verbose for full dry-run output"
+  fi
+}
+
+rulesync_skill_summary() {
+  local output="$1"
+  local summary
+  summary=$(printf '%s\n' "$output" | awk '
+    /Successfully loaded [0-9]+ rulesync skills/ {
+      line=$0
+    }
+    END {print line}
+  ')
+  if [ -n "$summary" ]; then
+    say "$summary"
+  fi
+}
+
+rulesync_install_frozen() {
+  local output status
+  output=$(capture_output rulesync install --frozen)
+  status=$?
+
+  if [ "$status" -ne 0 ] ||
+    printf '%s\n' "$output" | grep -Eq 'Failed to fetch source|Integrity mismatch'; then
+    fail "rulesync install --frozen failed"
+    printf '%s\n' "$output" | sed -n '1,180p' >&2
+    return 1
+  fi
+
+  if [ "$VERBOSE" -eq 1 ]; then
+    printf '%s\n' "$output"
+  else
+    printf '%s\n' "$output" | awk '
+      /Installing skills from/ {print}
+      /All skills up to date/ {print}
+      /Installed/ {print}
+    '
+  fi
+
+  verify_rulesync_cache_integrity
+}
+
+verify_rulesync_cache_integrity() {
+  if ! command -v node >/dev/null 2>&1; then
+    die "node is required to verify rulesync cache integrity"
+  fi
+
+  node - "$SOURCE_DIR" <<'NODE'
+const crypto = require("crypto");
+const fs = require("fs");
+const path = require("path");
+
+const sourceDir = process.argv[2];
+const lockPath = path.join(sourceDir, "rulesync.lock");
+const curatedDir = path.join(sourceDir, ".rulesync", "skills", ".curated");
+const lock = JSON.parse(fs.readFileSync(lockPath, "utf8"));
+const failures = [];
+
+function listFiles(dir, prefix = "") {
+  const entries = fs.readdirSync(dir, { withFileTypes: true })
+    .sort((a, b) => a.name.localeCompare(b.name));
+  const files = [];
+  for (const entry of entries) {
+    const rel = prefix ? `${prefix}/${entry.name}` : entry.name;
+    const full = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      files.push(...listFiles(full, rel));
+    } else if (entry.isFile()) {
+      files.push(rel);
+    }
+  }
+  return files;
+}
+
+function integrityFor(skillDir) {
+  const hash = crypto.createHash("sha256");
+  for (const rel of listFiles(skillDir).sort((a, b) => a.localeCompare(b))) {
+    hash.update(rel);
+    hash.update("\0");
+    hash.update(fs.readFileSync(path.join(skillDir, rel)));
+    hash.update("\0");
+  }
+  return `sha256-${hash.digest("hex")}`;
+}
+
+for (const [sourceName, source] of Object.entries(lock.sources || {})) {
+  for (const [skillName, skill] of Object.entries(source.skills || {})) {
+    const skillDir = path.join(curatedDir, skillName);
+    if (!fs.existsSync(skillDir)) {
+      failures.push(`${skillName}: missing curated cache entry (${sourceName})`);
+      continue;
+    }
+    const actual = integrityFor(skillDir);
+    if (skill.integrity && actual !== skill.integrity) {
+      failures.push(`${skillName}: expected ${skill.integrity}, got ${actual} (${sourceName})`);
+    }
+  }
+}
+
+if (failures.length > 0) {
+  console.error("rulesync cache integrity mismatch:");
+  for (const failure of failures) {
+    console.error(`  ${failure}`);
+  }
+  process.exit(1);
+}
+NODE
+}
+
+backup_rulesync_targets() {
+  local dry_output="$1"
+  local backup_dir
+  local backed_up=0
+  backup_dir="$HOME/.dotfiles-backups/rulesync/$(date +%Y%m%d-%H%M%S)"
+
+  printf '%s\n' "$dry_output" |
+    awk -F': ' '/^\[DRY RUN\] Would write: / {print $2}' |
+    while IFS= read -r path; do
+      [ -n "$path" ] || continue
+      [ -f "$path" ] || continue
+      local rel="${path#"$HOME"/}"
+      mkdir -p "$backup_dir/$(dirname "$rel")"
+      cp -p "$path" "$backup_dir/$rel"
+      backed_up=1
+    done
+
+  if [ -d "$backup_dir" ]; then
+    ok "backed up existing rulesync targets to $backup_dir"
+  elif [ "$backed_up" -eq 0 ]; then
+    ok "no existing rulesync target files needed backup"
+  fi
+}
+
+cmd_doctor() {
+  say "${BOLD}Dotfiles Doctor${RESET}"
+  note "source: $SOURCE_DIR"
+
+  need git
+  if git -C "$SOURCE_DIR" diff --quiet && git -C "$SOURCE_DIR" diff --cached --quiet; then
+    if [ -z "$(git -C "$SOURCE_DIR" ls-files --others --exclude-standard)" ]; then
+      ok "git working tree is clean"
+    else
+      warn "git has untracked files"
+      git -C "$SOURCE_DIR" status --short | sed -n '1,20p'
+    fi
+  else
+    warn "git has uncommitted changes"
+    git -C "$SOURCE_DIR" status --short | sed -n '1,20p'
+  fi
+
+  if git -C "$SOURCE_DIR" ls-files --error-unmatch rulesync.lock >/dev/null 2>&1; then
+    ok "rulesync.lock is tracked in git"
+  else
+    warn "rulesync.lock is not tracked in git"
+  fi
+
+  if command -v rulesync >/dev/null 2>&1; then
+    ok "rulesync is installed: $(rulesync --version 2>/dev/null || echo unknown)"
+    local rs_output
+    if rs_output=$(cd "$SOURCE_DIR" && capture_output rulesync generate --global --dry-run --verbose); then
+      rulesync_skill_summary "$rs_output"
+      local rs_writes
+      rs_writes=$(printf '%s\n' "$rs_output" | awk '
+        /^\[DRY RUN\] Would write [0-9]+ file\(s\) total/ {
+          sub(/^\[DRY RUN\] /, "")
+          print
+          exit
+        }
+      ')
+      if printf '%s\n' "$rs_output" | grep -q '0 curated'; then
+        warn "rulesync generated from local skills only; run: dotfiles sync-ai --dry-run"
+      elif [ -n "$rs_writes" ]; then
+        warn "rulesync has pending generated output: $rs_writes"
+        note "run dotfiles sync-ai --dry-run to list target files"
+      else
+        ok "rulesync dry-run completed"
+      fi
+    else
+      warn "rulesync dry-run failed"
+      printf '%s\n' "$rs_output" | sed -n '1,80p'
+    fi
+  else
+    warn "rulesync is not installed"
+  fi
+
+  if command -v brew >/dev/null 2>&1; then
+    local brew_output
+    if brew_output=$(capture_output brew bundle check --no-upgrade --file="$SOURCE_DIR/Brewfile_cli" --verbose); then
+      ok "Brewfile_cli packages are installed"
+    elif printf '%s\n' "$brew_output" | grep -q 'Operation not permitted'; then
+      warn "Homebrew check was blocked by filesystem permissions; run: dotfiles brew check"
+    else
+      warn "Brewfile_cli has missing packages; run: dotfiles brew install --yes"
+    fi
+  else
+    warn "Homebrew is not installed"
+  fi
+
+  local cm_status
+  cm_status=$(chezmoi status --path-style relative)
+  summarize_chezmoi_status "$cm_status"
+}
+
+cmd_status() {
+  say "${BOLD}Git${RESET}"
+  git -C "$SOURCE_DIR" status --short || true
+  say ""
+  say "${BOLD}Chezmoi${RESET}"
+  summarize_chezmoi_status "$(chezmoi status --path-style relative)"
+}
+
+cmd_preview() {
+  [ "$#" -eq 0 ] || die "unknown preview argument: $*"
+  summarize_chezmoi_status "$(chezmoi status --path-style relative)"
+  if [ "$VERBOSE" -eq 1 ]; then
+    chezmoi apply --dry-run --verbose
+  else
+    note "use dotfiles preview --verbose for the full chezmoi dry-run diff"
+  fi
+}
+
+cmd_apply() {
+  [ "$#" -eq 0 ] || die "unknown apply argument: $*"
+  confirm_write "Apply dotfiles with chezmoi"
+  if [ "$VERBOSE" -eq 1 ]; then
+    chezmoi apply --verbose
+  else
+    chezmoi apply
+  fi
+  ok "chezmoi apply completed"
+  summarize_chezmoi_status "$(chezmoi status --path-style relative)"
+}
+
+cmd_sync_ai() {
+  local mode="dry-run"
+  local args=()
+  while [ "$#" -gt 0 ]; do
+    case "$1" in
+      --dry-run)
+        mode="dry-run"
+        ;;
+      --apply)
+        mode="apply"
+        YES=1
+        ;;
+      *)
+        args+=("$1")
+        ;;
+    esac
+    shift
+  done
+  [ "${#args[@]}" -eq 0 ] || die "unknown sync-ai argument: ${args[*]}"
+
+  need rulesync
+  cd "$SOURCE_DIR"
+
+  rulesync_install_frozen
+  local dry_output
+  if ! dry_output=$(capture_output rulesync generate --global --dry-run --verbose); then
+    fail "rulesync generate dry-run failed"
+    printf '%s\n' "$dry_output" | sed -n '1,160p' >&2
+    return 1
+  fi
+  rulesync_skill_summary "$dry_output"
+  printf '%s\n' "$dry_output" | awk '/^\[DRY RUN\] Would write [0-9]+ file\(s\) total/ {print}'
+
+  if [ "$mode" = "dry-run" ]; then
+    if [ "$VERBOSE" -eq 1 ]; then
+      printf '%s\n' "$dry_output"
+    else
+      printf '%s\n' "$dry_output" | sed -n 's/^\[DRY RUN\] Would write: /  /p'
+      note "use dotfiles sync-ai --apply to write these files"
+    fi
+    return 0
+  fi
+
+  backup_rulesync_targets "$dry_output"
+  if ! run_capture "rulesync generate --global" rulesync generate --global; then
+    return 1
+  fi
+  ok "rulesync generated global AI config"
+}
+
+cmd_brew() {
+  local sub="${1:-}"
+  shift || true
+  need brew
+  case "$sub" in
+    check)
+      local check_output
+      if check_output=$(capture_output brew bundle check --no-upgrade --file="$SOURCE_DIR/Brewfile_cli" --verbose); then
+        ok "Brewfile_cli packages are installed"
+      elif printf '%s\n' "$check_output" | grep -q 'Operation not permitted'; then
+        fail "Homebrew check was blocked by filesystem permissions"
+        printf '%s\n' "$check_output" | sed -n '1,160p' >&2
+        return 1
+      else
+        fail "Brewfile_cli has missing packages"
+        printf '%s\n' "$check_output" | sed -n '1,160p' >&2
+        return 1
+      fi
+      ;;
+    install)
+      confirm_write "Install missing Brewfile_cli packages"
+      run_capture "brew bundle --no-upgrade" brew bundle --no-upgrade --file="$SOURCE_DIR/Brewfile_cli"
+      ok "Brewfile_cli packages installed"
+      ;;
+    update)
+      confirm_write "Run brew update and upgrade Brewfile_cli packages"
+      run_capture "brew update" brew update
+      run_capture "brew bundle" brew bundle --file="$SOURCE_DIR/Brewfile_cli"
+      ok "Homebrew updated and Brewfile_cli reconciled"
+      ;;
+    *)
+      die "usage: dotfiles brew check|install|update"
+      ;;
+  esac
+}
+
+cmd_repo() {
+  local sub="${1:-}"
+  shift || true
+  case "$sub" in
+    status)
+      git -C "$SOURCE_DIR" status --short
+      ;;
+    pull)
+      run_capture "git pull --ff-only" git -C "$SOURCE_DIR" pull --ff-only
+      ok "dotfiles repo pulled"
+      ;;
+    push)
+      run_capture "git push" git -C "$SOURCE_DIR" push
+      ok "dotfiles repo pushed"
+      ;;
+    commit)
+      local message=""
+      local stage_all=0
+      while [ "$#" -gt 0 ]; do
+        case "$1" in
+          --message|-m)
+            shift
+            message="${1:-}"
+            ;;
+          --all)
+            stage_all=1
+            ;;
+          *)
+            die "unknown repo commit argument: $1"
+            ;;
+        esac
+        shift
+      done
+      [ -n "$message" ] || die "usage: dotfiles repo commit [--all] --message \"message\""
+      git -C "$SOURCE_DIR" status --short
+      if [ "$stage_all" -eq 1 ]; then
+        confirm_write "Stage all current dotfiles changes and commit"
+        run_capture "git add -A" git -C "$SOURCE_DIR" add -A
+      elif git -C "$SOURCE_DIR" diff --cached --quiet; then
+        die "No staged changes to commit. Stage exactly what you want, or use --all."
+      else
+        confirm_write "Commit currently staged dotfiles changes"
+      fi
+      run_capture "git commit" git -C "$SOURCE_DIR" commit -m "$message"
+      ok "dotfiles changes committed"
+      ;;
+    *)
+      die "usage: dotfiles repo status|pull|push|commit"
+      ;;
+  esac
+}
+
+cmd_pull_apply() {
+  [ "$#" -eq 0 ] || die "unknown pull-apply argument: $*"
+  confirm_write "Pull dotfiles and apply changes"
+  YES=1
+  run_capture "git pull --ff-only" git -C "$SOURCE_DIR" pull --ff-only
+  cmd_preview
+  cmd_apply
+}
+
+main() {
+  if [ "$#" -eq 0 ]; then
+    usage
+    exit 0
+  fi
+
+  local argv=()
+  while [ "$#" -gt 0 ]; do
+    case "$1" in
+      --verbose|-v)
+        VERBOSE=1
+        ;;
+      --yes|-y)
+        YES=1
+        ;;
+      --help|-h)
+        usage
+        exit 0
+        ;;
+      *)
+        argv+=("$1")
+        ;;
+    esac
+    shift
+  done
+
+  local cmd=""
+  if [ "${#argv[@]}" -gt 0 ]; then
+    cmd="${argv[0]}"
+    argv=("${argv[@]:1}")
+  fi
+
+  case "$cmd" in
+    doctor)
+      cmd_doctor "${argv[@]+"${argv[@]}"}"
+      ;;
+    status)
+      cmd_status "${argv[@]+"${argv[@]}"}"
+      ;;
+    preview)
+      cmd_preview "${argv[@]+"${argv[@]}"}"
+      ;;
+    apply)
+      cmd_apply "${argv[@]+"${argv[@]}"}"
+      ;;
+    sync-ai)
+      cmd_sync_ai "${argv[@]+"${argv[@]}"}"
+      ;;
+    brew)
+      cmd_brew "${argv[@]+"${argv[@]}"}"
+      ;;
+    repo)
+      cmd_repo "${argv[@]+"${argv[@]}"}"
+      ;;
+    pull-apply)
+      cmd_pull_apply "${argv[@]+"${argv[@]}"}"
+      ;;
+    help|--help|-h)
+      usage
+      ;;
+    *)
+      usage
+      exit 1
+      ;;
+  esac
+}
+
+main "$@"

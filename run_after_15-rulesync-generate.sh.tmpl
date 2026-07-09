@@ -11,15 +11,91 @@ eval "$(/usr/local/bin/brew shellenv)"
 {{ end -}}
 
 if ! command -v rulesync &>/dev/null; then
-  echo "rulesync not found — skipping rule generation."
-  exit 0
+  echo "ERROR: rulesync not found, but AI agent config generation depends on it." >&2
+  echo "Repair with: brew bundle --file=\"{{ .chezmoi.sourceDir }}/Brewfile_cli\"" >&2
+  echo "Then rerun: chezmoi apply" >&2
+  exit 1
 fi
 
 DOTFILES="{{ .chezmoi.sourceDir }}"
 cd "$DOTFILES"
 
 echo "Installing rulesync sources..."
-rulesync install
+INSTALL_OUTPUT="$(mktemp)"
+if ! rulesync install --frozen >"$INSTALL_OUTPUT" 2>&1; then
+  cat "$INSTALL_OUTPUT" >&2
+  rm -f "$INSTALL_OUTPUT"
+  exit 1
+fi
+if grep -Eq "Failed to fetch source|Integrity mismatch" "$INSTALL_OUTPUT"; then
+  cat "$INSTALL_OUTPUT" >&2
+  rm -f "$INSTALL_OUTPUT"
+  exit 1
+fi
+cat "$INSTALL_OUTPUT"
+rm -f "$INSTALL_OUTPUT"
+
+echo "Verifying rulesync source cache integrity..."
+node - "$DOTFILES" <<'NODE'
+const crypto = require("crypto");
+const fs = require("fs");
+const path = require("path");
+
+const sourceDir = process.argv[2];
+const lockPath = path.join(sourceDir, "rulesync.lock");
+const curatedDir = path.join(sourceDir, ".rulesync", "skills", ".curated");
+const lock = JSON.parse(fs.readFileSync(lockPath, "utf8"));
+const failures = [];
+
+function listFiles(dir, prefix = "") {
+  const entries = fs.readdirSync(dir, { withFileTypes: true })
+    .sort((a, b) => a.name.localeCompare(b.name));
+  const files = [];
+  for (const entry of entries) {
+    const rel = prefix ? `${prefix}/${entry.name}` : entry.name;
+    const full = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      files.push(...listFiles(full, rel));
+    } else if (entry.isFile()) {
+      files.push(rel);
+    }
+  }
+  return files;
+}
+
+function integrityFor(skillDir) {
+  const hash = crypto.createHash("sha256");
+  for (const rel of listFiles(skillDir).sort((a, b) => a.localeCompare(b))) {
+    hash.update(rel);
+    hash.update("\0");
+    hash.update(fs.readFileSync(path.join(skillDir, rel)));
+    hash.update("\0");
+  }
+  return `sha256-${hash.digest("hex")}`;
+}
+
+for (const [sourceName, source] of Object.entries(lock.sources || {})) {
+  for (const [skillName, skill] of Object.entries(source.skills || {})) {
+    const skillDir = path.join(curatedDir, skillName);
+    if (!fs.existsSync(skillDir)) {
+      failures.push(`${skillName}: missing curated cache entry (${sourceName})`);
+      continue;
+    }
+    const actual = integrityFor(skillDir);
+    if (skill.integrity && actual !== skill.integrity) {
+      failures.push(`${skillName}: expected ${skill.integrity}, got ${actual} (${sourceName})`);
+    }
+  }
+}
+
+if (failures.length > 0) {
+  console.error("rulesync cache integrity mismatch:");
+  for (const failure of failures) {
+    console.error(`  ${failure}`);
+  }
+  process.exit(1);
+}
+NODE
 
 echo "Generating rules for all targets (global)..."
 rulesync generate --global

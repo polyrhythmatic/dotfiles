@@ -1,0 +1,32 @@
+{{ "#!/bin/bash" }}
+# Repair missing Homebrew CLI packages if they drift off the machine.
+# Runs on every chezmoi apply but only checks for missing packages, not
+# outdated packages. Use `dotfiles brew update` for explicit upgrades.
+
+set -euo pipefail
+
+{{ if eq .chezmoi.arch "arm64" -}}
+eval "$(/opt/homebrew/bin/brew shellenv)"
+{{ else -}}
+eval "$(/usr/local/bin/brew shellenv)"
+{{ end -}}
+
+if ! command -v brew >/dev/null 2>&1; then
+  echo "ERROR: Homebrew not found, but Brewfile_cli reconciliation depends on it." >&2
+  echo "Repair with: chezmoi apply" >&2
+  exit 1
+fi
+
+BREWFILE="{{ .chezmoi.sourceDir }}/Brewfile_cli"
+if brew bundle check --no-upgrade --file="$BREWFILE" >/dev/null 2>&1; then
+  exit 0
+fi
+
+echo "CLI package drift detected. Repairing Brewfile_cli packages..."
+brew bundle --no-upgrade --file="$BREWFILE"
+
+echo "Reinstalling browser assets for CLI tools..."
+command -v agent-browser &>/dev/null && agent-browser install
+command -v playwright-cli &>/dev/null && playwright-cli install
+
+echo "CLI package drift repaired."

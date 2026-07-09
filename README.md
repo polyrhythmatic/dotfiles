@@ -52,6 +52,44 @@ later invocations can drop the `bin/` prefix.)
 After the first apply generates an SSH key and you've added it to GitHub,
 push your local changes and future machines can use the one-liner above.
 
+## Dotfiles CLI
+
+This repo installs a `dotfiles` command at `~/.local/bin/dotfiles`. It is a
+quiet wrapper around chezmoi, Homebrew, rulesync, and git, and it works from any
+directory by resolving `chezmoi source-path`.
+
+Useful status commands:
+
+```bash
+dotfiles doctor              # compact health check
+dotfiles status              # git + chezmoi summary
+dotfiles preview             # concise apply preview
+dotfiles preview --verbose   # full chezmoi dry-run diff
+dotfiles sync-ai --dry-run   # fetch locked rulesync sources, preview writes
+dotfiles brew check          # check required CLI packages without upgrades
+```
+
+Write commands require an explicit flag in non-interactive sessions:
+
+```bash
+dotfiles apply --yes
+dotfiles sync-ai --apply
+dotfiles brew install --yes
+dotfiles brew update --yes
+dotfiles repo commit --all --message "message" --yes
+dotfiles pull-apply --yes
+```
+
+The output is intentionally summary-first. Use `--verbose` when you need raw
+command output. `sync-ai --dry-run` may write locked external sources into the
+repo's ignored rulesync cache, but it does not write global Claude/Codex files.
+`repo commit` commits staged changes by default; use `--all` only when you want
+to stage the whole current working tree first.
+
+Repo-local agent instructions live in `AGENTS.md`. `CLAUDE.md` only contains
+`@AGENTS.md` for Claude compatibility. Both files are ignored by chezmoi and are
+not applied to `$HOME`.
+
 ## What it Does
 
 `chezmoi apply` manages the following:
@@ -74,17 +112,31 @@ Claude Code, Codex CLI, Cursor, Warp, and Gemini CLI. `rulesync generate
 --global` writes the right files into each tool's expected paths on every
 `chezmoi apply` (via `run_after_15-rulesync-generate.sh.tmpl`).
 
+CLI package drift is repaired on every apply with a lightweight
+`brew bundle check --no-upgrade` against `Brewfile_cli`. Missing packages are
+installed without turning every apply into a Homebrew upgrade. Use
+`dotfiles brew update --yes` when you explicitly want package updates.
+
+Rulesync sources are installed with `rulesync install --frozen`, so machines use
+the git-tracked `rulesync.lock`. Missing `rulesync` fails loudly at AI config
+generation time instead of silently skipping that step.
+
+When intentionally updating external rulesync sources, run `rulesync install
+--update`, review the `rulesync.lock` diff, then commit it.
+
 ```
 rulesync.jsonc                   # Targets + external skill sources
+rulesync.lock                    # Pinned external source commits + skill integrity
 .rulesync/
   ARCHITECTURE.md                # Detailed setup notes
+  rules/                         # Global cross-agent rules
   skills/                        # Custom skills (per-target via frontmatter)
   subagents/                     # Custom subagents
 ```
 
 External skills (difit, agent-browser, chrome-devtools, google workspace,
 playwright) are declared as `sources` in `rulesync.jsonc` and fetched via
-`rulesync install` using git transport (no GitHub API rate limits).
+`rulesync install --frozen` using git transport (no GitHub API rate limits).
 
 `~/.claude/settings.json` (model, env vars, effort level) is managed by
 `private_dot_claude/modify_settings.json` — a merge script that preserves any
@@ -101,6 +153,7 @@ keys Claude Code or rulesync writes (permissions, hooks).
 | `private_dot_config/starship.toml` | `~/.config/starship.toml` | Starship prompt |
 | `private_dot_config/ghostty/` | `~/.config/ghostty/` | Ghostty terminal |
 | `private_dot_claude/modify_settings.json` | `~/.claude/settings.json` | Claude Code settings (merge script) |
+| `private_dot_local/bin/executable_dotfiles` | `~/.local/bin/dotfiles` | Operational CLI for setup/maintenance |
 | `Brewfile_cli` | (run script input) | CLI packages |
 | `Brewfile_cask` | (run script input) | GUI applications |
 | `runcom/.zshrc` | (sourced by modify script) | Zsh config source |
@@ -122,7 +175,8 @@ keys Claude Code or rulesync writes (permissions, hooks).
 | `run_once_before_06-setup-ssh.sh.tmpl` | once | SSH key generation |
 | `run_once_before_07-check-fonts.sh` | once | Berkeley Mono font check |
 | `run_after_10-iterm2-profile.sh.tmpl` | after | iTerm2 Dynamic Profile |
-| `run_after_15-rulesync-generate.sh.tmpl` | after | `rulesync install && generate --global` |
+| `run_after_12-ensure-brew-packages.sh.tmpl` | after | Reinstall missing Brewfile CLI packages if they drift; no upgrades |
+| `run_after_15-rulesync-generate.sh.tmpl` | after | `rulesync install --frozen && generate --global` |
 | `run_onchange_after_20-macos-defaults.sh.tmpl` | onchange | macOS system preferences |
 
 ## Testing
