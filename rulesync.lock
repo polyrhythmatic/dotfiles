@@ -3,56 +3,56 @@
   "sources": {
     "yoshiko-pg/difit": {
       "requestedRef": "main",
-      "resolvedRef": "56e9692693750491f4cc61114d5fc6a3cbdbf44e",
-      "resolvedAt": "2026-04-29T13:55:44.233Z",
+      "resolvedRef": "46be8dcce205b2b389dff10373811d8e62868ad9",
+      "resolvedAt": "2026-07-20T00:56:16.343Z",
       "skills": {
         "difit": {
           "integrity": "sha256-22f7e89ad93c08f5a3036af4ef1542afcbe67f71129d2386c25bcb46d8eb047f"
         },
         "difit-review": {
-          "integrity": "sha256-51e7f77f3b0ae03103ae4ff2179219d1072e62f1a624c81efe1e56cee842f252"
+          "integrity": "sha256-76634306b477c664ed3d0d207749c8c0e6ffa0e02b9bde4012e28da4cb5bd152"
         }
       }
     },
     "vercel-labs/agent-browser": {
       "requestedRef": "main",
-      "resolvedRef": "57405f93614fae46e5c955ce662b4785283e1301",
-      "resolvedAt": "2026-04-29T13:55:45.278Z",
+      "resolvedRef": "81c336c1c20b80ac648e0416a7b6e0c0ae7878bb",
+      "resolvedAt": "2026-07-20T00:56:17.108Z",
       "skills": {
         "agent-browser": {
-          "integrity": "sha256-c19a532a3777698b80b35270939a1dc559da451381971b3e1e78174d1ab54863"
+          "integrity": "sha256-a674b7d81066e3cc471a7512ddb4ae724418cbfefa75cbb050b0dc430e4d57a0"
         }
       }
     },
     "chromedevtools/chrome-devtools-mcp": {
       "requestedRef": "main",
-      "resolvedRef": "f1afe842ae64128f0d1f0230da6b2efbe209fe20",
-      "resolvedAt": "2026-04-29T13:55:46.315Z",
+      "resolvedRef": "76fd2424984827802867672fcc8d0e0036f4a3af",
+      "resolvedAt": "2026-07-20T00:56:17.839Z",
       "skills": {
         "a11y-debugging": {
           "integrity": "sha256-ce12f2bb4cfb0c5716a9471afdc53a3f236d924756d0d213d8c852db1926a733"
         },
         "chrome-devtools": {
-          "integrity": "sha256-bebbf4641f9edc30ad72c773d3b7ef558adec348910e1bbac03f74006a00e2a5"
+          "integrity": "sha256-88f94e25e0182222bd39c2ac531742c485af90e86b6579c6ac323188e30e0546"
         },
         "chrome-devtools-cli": {
-          "integrity": "sha256-97aab4131e37a5a38d170c11a01cfbdd15c2ded6443354df87e75a6d309b971e"
+          "integrity": "sha256-3429b7c4c9bcbb06947c0c7e62278dcef42ca7aba090f51613e30728fef60e01"
         },
         "debug-optimize-lcp": {
           "integrity": "sha256-60f6e5d4dea5c3aa7656e322efcbd4d9183b1f194dcbdaa4e69ea38df0588dda"
         },
         "memory-leak-debugging": {
-          "integrity": "sha256-462587d4b20301f1d3190089a6be21a993248f6df463aa579f0290466c6e60f1"
+          "integrity": "sha256-ce5de82ab1d3f418a42f5c54b54b2278c157c9306dc626f0ac3be6d176647b7c"
         },
         "troubleshooting": {
-          "integrity": "sha256-b9e1349d9b9cebcd281df6e99de9aa8fbfb7f9dd3ae26ca64a563e33dff8932a"
+          "integrity": "sha256-c184a6242bba2427c17ac1d9f23aa76c99f408788894250ad8cf40a33898a010"
         }
       }
     },
     "googleworkspace/cli": {
       "requestedRef": "main",
       "resolvedRef": "a3768d0e82ad83cca2da97724e46bea4ff0e6dbd",
-      "resolvedAt": "2026-04-29T13:55:47.453Z",
+      "resolvedAt": "2026-07-20T00:56:18.719Z",
       "skills": {
         "gws-calendar": {
           "integrity": "sha256-eda5000f5e3ea56b0f4a744b6c4b72669eb5def8e911d2a4df386e1a2ab6c7e5"
@@ -190,44 +190,44 @@
     },
     "microsoft/playwright-cli": {
       "requestedRef": "main",
-      "resolvedRef": "ee24ded1770c7a4f7a8cbb8e22aac9812e151feb",
-      "resolvedAt": "2026-04-29T13:55:48.423Z",
+      "resolvedRef": "eee5a185c98e6b04d88f580d45a854e9692ab50b",
+      "resolvedAt": "2026-07-20T00:56:19.360Z",
       "skills": {
         "playwright-cli": {
-          "integrity": "sha256-06c818d74cb47227f56c9c9ccdba415c35b1ac8384fe077a9edb3801c17f0989"
-        }
-      }
-    },
-    "mattpocock/skills": {
-      "requestedRef": "main",
-      "resolvedRef": "d574778f94cf620fcc8ce741584093bc650a61d3",
-      "resolvedAt": "2026-07-09T22:44:22.281Z",
-      "skills": {
-        "grill-me": {
-          "integrity": "sha256-25b02cbdacb3d7fcf0fdea243cb8358cc5ba1e85800d0974b028f6e8bacac94d"
-        },
-        "grilling": {
-          "integrity": "sha256-1468bb9078a95a6672a687cd37b97cbc25be2584ec327400b94613e69a1f5956"
-        }
-      }
-    },
-    "cursor/plugins": {
-      "requestedRef": "main",
-      "resolvedRef": "0dda29e839d15464a137af9935665a5a47ee09b8",
-      "resolvedAt": "2026-07-09T22:44:23.293Z",
-      "skills": {
-        "thermo-nuclear-code-quality-review": {
-          "integrity": "sha256-1bb59994582195f4e209546efe5f9fc5d05d6f19c91d5b18048d0f2186a4fbd2"
+          "integrity": "sha256-ca32d369efecdd52dcee8cf0afecfa21bce7b0e7acac1bc42bd078f46c489d14"
         }
       }
     },
     "blader/humanizer": {
       "requestedRef": "main",
       "resolvedRef": "1b48564898e999219882660237fde01bf4843a0f",
-      "resolvedAt": "2026-07-09T22:45:24.648Z",
+      "resolvedAt": "2026-07-20T00:56:20.723Z",
       "skills": {
         "humanizer": {
           "integrity": "sha256-b53217b1e07d1c54f255ee7b5e790cc986e3868e7531c7414eb4339d4c08958b"
+        }
+      }
+    },
+    "mattpocock/skills": {
+      "requestedRef": "main",
+      "resolvedRef": "9603c1cc8118d08bc1b3bf34cf714f62178dea3b",
+      "resolvedAt": "2026-07-20T00:56:21.352Z",
+      "skills": {
+        "grill-me": {
+          "integrity": "sha256-38451dd2683eb309b4176ac5b2648ff6f86e320145baed1ac6c2e34367c8cae6"
+        },
+        "grilling": {
+          "integrity": "sha256-5f8e034b4892cfa8b8c07fd1da21e00cf08aa34b0d0189c6f424410bff7d74ae"
+        }
+      }
+    },
+    "cursor/plugins": {
+      "requestedRef": "main",
+      "resolvedRef": "3fe2823ce17c1656c222d4b7c59d3f82fbf20143",
+      "resolvedAt": "2026-07-20T00:56:21.944Z",
+      "skills": {
+        "thermo-nuclear-code-quality-review": {
+          "integrity": "sha256-1bb59994582195f4e209546efe5f9fc5d05d6f19c91d5b18048d0f2186a4fbd2"
         }
       }
     }
