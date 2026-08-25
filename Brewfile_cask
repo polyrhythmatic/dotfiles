@@ -2,6 +2,7 @@ cask "xquartz"
 
 cask "1password"
 cask "appcleaner"
+cask "chatgpt"
 cask "codex"
 cask "cursor"
 cask "firefox"
