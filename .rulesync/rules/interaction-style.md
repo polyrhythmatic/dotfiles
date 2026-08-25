@@ -54,3 +54,8 @@ dev-server port, session naming, headed/headless), not just a tool name.
 Choose one mechanism before loading tool-specific skills; prefer CLI browser
 tools over MCP when the CLI can complete the task (`chrome-devtools` MCP is a
 last resort).
+
+# Difit Reviews
+
+When launching difit, do not pass `--comment` unless I explicitly ask for
+annotations. Open the plain diff.
