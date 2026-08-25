@@ -66,6 +66,17 @@ function timezsh {
 # Version Managers & Environment Setup
 # =====================
 
+# agent-browser: namespace the default browser session per Claude Code
+# session. Each Bash tool call re-sources this file and inherits
+# CLAUDE_CODE_SESSION_ID, so every agent-browser command lands in a
+# session named cc-<first8>. A SessionEnd hook
+# (~/.claude/hooks/browser-session-cleanup.sh) then closes exactly that
+# session on exit — never a pre-existing, explicitly-named, or concurrent
+# session's browser. Only set under Claude Code; human shells are untouched.
+if [ -n "$CLAUDE_CODE_SESSION_ID" ] && [ -z "$AGENT_BROWSER_SESSION" ]; then
+  export AGENT_BROWSER_SESSION="cc-${CLAUDE_CODE_SESSION_ID:0:8}"
+fi
+
 # fnm (Fast Node Manager)
 eval "$(fnm env --use-on-cd)"
 
